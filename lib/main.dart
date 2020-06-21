@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package/bottomNav.dart';
+import 'package/carousel_slider.dart';
+ 
 void main() {
   runApp(MyApp());
 }
@@ -26,11 +28,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 2;
+  PageController _pageController;
+  final List<String> imgList = [
+  'banner1.png',
+  'banner2.jpg',
+  'banner3.png'
 
-
-  
-
+  ];
   @override
+  void initState() {
+    
+    super.initState();
+    _pageController = PageController();
+  }
+  @override 
+  void dispose(){
+    _pageController.dispose();
+    super.dispose();
+  }
+@override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
@@ -41,23 +58,24 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           
           title: Row(
-            children: <Widget>[
-              Text("Advika"),
-              
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[ 
+              Text("Advika"), 
             ],
             ),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        body: SingleChildScrollView(
+                  child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Text(
-                'Its A dummy App',
-              ),
-              Text(
-                'Advika',
-                style: Theme.of(context).textTheme.headline4,
-              ),
+             CarouselSlider(
+                options: CarouselOptions(),
+                items: imgList.map((item) => Container(
+                  child: Center(
+                    child: Image.network(item, fit: BoxFit.cover, width: 1000)
+                  ),
+                )).toList(),
+              )
             ],
           ),
         ),
@@ -66,8 +84,58 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: (){},
           tooltip: 'Increment',
           child: Icon(Icons.refresh),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
+        ), 
+        bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        showElevation: true,
+        itemCornerRadius: 8,
+        curve: Curves.easeInBack,
+        onItemSelected: (index) => setState(() {
+          _currentIndex = index;
+        print(_currentIndex);
+        }),
+        items: [
+          BottomNavyBarItem(
+            icon: Icon(
+              Icons.assignment
+            ),
+            title: Text('Orders'),
+            activeColor: Colors.purpleAccent,
+            textAlign: TextAlign.center,
+          ),
+          
+          BottomNavyBarItem(
+
+            icon: Icon(Icons.search),
+            title: Text('Search'),
+            activeColor: Colors.yellow,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+
+            icon: Icon(Icons.apps),
+            title: Text('Home'),
+            activeColor: Colors.red,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.shopping_cart),
+            title: Text(
+              'Cart',
+            ),
+            activeColor: Colors.pink,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            
+            icon: Icon(Icons.settings),
+            title: Text('Settings'),
+            activeColor: Colors.blue,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
+        ),
     );
   }
 }
