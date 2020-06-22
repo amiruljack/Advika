@@ -1,3 +1,4 @@
+import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
@@ -85,46 +86,53 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisCount: 2,
                 childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
                 children: <Widget>[
-                  Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
+                  GestureDetector(
+                    onTap:(){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) => new ProductPage()
+                        ));
+                    },
+                    child: Card(
+                      child:Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          SizedBox(height: 10,),
+                          Image.network("http://w-safe.ml/advika/gobhi.png",
+                                  fit: BoxFit.cover,
+                                  width: MediaQuery.of(context).size.width/2-5,
+                                  height:MediaQuery.of(context).size.height/5
                           ),
-                        ),
-                      ],
+                          
+                          Center(
+                            child: Text(
+                              "Gobhi",
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width/25
+                              ),
+                              ),
+                          ),
+                          Center(
+                            child: Text("250g"),
+                          ),
+                          Center(
+                            child: Text("\u20B9 30/-"),
+                          ),
+                          Center(
+                            child: RaisedButton(
+                              color: Colors.green,
+                              child: Text(
+                                "Add to Cart",
+                                style:TextStyle(
+                                  color: Colors.white,
+                                )
+                              ),
+                              onPressed: (){
+
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Card(
