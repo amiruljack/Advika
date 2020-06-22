@@ -1,32 +1,15 @@
 import 'package:flutter/material.dart';
+
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: MyHomePage(title: 'Advika'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+class ProductPage extends StatefulWidget {
+  ProductPage({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ProductPageState createState() => _ProductPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ProductPageState extends State<ProductPage> {
   int _currentIndex = 2;
   PageController _pageController;
   final List<String> imgList = [
@@ -46,10 +29,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _pageController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF34a24b);
+     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
         primaryColor: PrimaryColor,
