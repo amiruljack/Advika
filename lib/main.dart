@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
+import 'path.dart';
+import 'allproduct_model.dart';
+import 'package:http/http.dart'as http;
 
 void main() {
   runApp(MyApp());
@@ -81,276 +86,83 @@ class _MyHomePageState extends State<MyHomePage> {
                       ))
                   .toList(),
             ),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
-                children: <Widget>[
-                  GestureDetector(
-                    onTap:(){
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) => new ProductPage()
-                        ));
-                    },
-                    child: Card(
-                      child:Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          SizedBox(height: 10,),
-                          Image.network("http://w-safe.ml/advika/gobhi.png",
-                                  fit: BoxFit.cover,
-                                  width: MediaQuery.of(context).size.width/2-5,
-                                  height:MediaQuery.of(context).size.height/5
-                          ),
-                          
-                          Center(
-                            child: Text(
-                              "Gobhi",
-                              style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width/25
+           FutureBuilder(
+                  future: getProducts(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      List<GetAllProduct> data = snapshot.data;
+                      return Expanded(
+                              child: GridView.count(
+                                crossAxisCount: 2,
+                                childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
+                                children: data.map(
+                                  (product) => Expanded(
+                                      child: GestureDetector(
+                                      onTap:(){
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (BuildContext context) => new ProductPage()
+                                          ));
+                                      },
+                                      child: Card(
+                                        child:Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            SizedBox(height: 10,),
+                                            Image.network("$image/"+product.productimage,
+                                                    fit: BoxFit.cover,
+                                                    width: MediaQuery.of(context).size.width/2-5,
+                                                    height:MediaQuery.of(context).size.height/5
+                                            ),
+                                            
+                                            Center(
+                                              child: Text(
+                                                "Gobhi",
+                                                style: TextStyle(
+                                                  fontSize: MediaQuery.of(context).size.width/25
+                                                ),
+                                                ),
+                                            ),
+                                            Center(
+                                              child: Text("250g"),
+                                            ),
+                                            Center(
+                                              child: Text("\u20B9 30/-"),
+                                            ),
+                                            Center(
+                                              child: RaisedButton(
+                                                color: Colors.green,
+                                                child: Text(
+                                                  "Add to Cart",
+                                                  style:TextStyle(
+                                                    color: Colors.white,
+                                                  )
+                                                ),
+                                                onPressed: (){
+
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ).toList(),
+                                  
                               ),
-                              ),
-                          ),
-                          Center(
-                            child: Text("250g"),
-                          ),
-                          Center(
-                            child: Text("\u20B9 30/-"),
-                          ),
-                          Center(
-                            child: RaisedButton(
-                              color: Colors.green,
-                              child: Text(
-                                "Add to Cart",
-                                style:TextStyle(
-                                  color: Colors.white,
-                                )
-                              ),
-                              onPressed: (){
-
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                 Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    child:Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        SizedBox(height: 10,),
-                        Image.network("http://w-safe.ml/advika/gobhi.png",
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width/2-5,
-                                height:MediaQuery.of(context).size.height/5
-                        ),
-                        
-                        Center(
-                          child: Text(
-                            "Gobhi",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width/25
-                            ),
-                            ),
-                        ),
-                        Center(
-                          child: Text("250g"),
-                        ),
-                        Center(
-                          child: Text("\u20B9 30/-"),
-                        ),
-                        Center(
-                          child: RaisedButton(
-                            color: Colors.green,
-                            child: Text(
-                              "Add to Cart",
-                              style:TextStyle(
-                                color: Colors.white,
-                              )
-                            ),
-                            onPressed: (){
-
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-          ],
+                            );
+                    }
+                    else{
+                      return Center(
+                        child: CircularProgressIndicator(),
+                        );
+                    }
+                  }
+           )
+          ]
         ),
+         
+          
         
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _currentIndex,
@@ -412,5 +224,33 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+  Future<List<GetAllProduct>> getProducts() async {
+    var response = await http.post("$api/allproducts");
+
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+    print(dataUser);
+    List<GetAllProduct> rp = [];
+
+    for (var row in dataUser) {
+      for (var res in row["Marks"]) {
+        GetAllProduct data = GetAllProduct(
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+            res["SubjectName"],
+        );
+        rp.add(data);
+      }
+    }
+
+    return rp;
   }
 }
