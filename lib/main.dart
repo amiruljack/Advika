@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
+import 'login.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
 import 'path.dart';
@@ -69,97 +70,67 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-              ),
-              items: imgList
-                  .map((item) => Container(
-                        child: Center(
-                            child: Image.network(item,
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height / 5)),
-                      ))
-                  .toList(),
-            ),
-           FutureBuilder(
-                  future: getProducts(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      List<GetAllProduct> data = snapshot.data;
-                      return Expanded(
-                              child: GridView.count(
-                                crossAxisCount: 2,
-                                childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
-                                children: data.map(
-                                  (product) => Expanded(
-                                      child: GestureDetector(
-                                      onTap:(){
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (BuildContext context) => new ProductPage()
-                                          ));
-                                      },
-                                      child: Card(
-                                        child:Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            SizedBox(height: 10,),
-                                            Image.network("$image/"+product.productimage,
-                                                    fit: BoxFit.cover,
-                                                    width: MediaQuery.of(context).size.width/2-5,
-                                                    height:MediaQuery.of(context).size.height/5
-                                            ),
-                                            
-                                            Center(
-                                              child: Text(
-                                                "Gobhi",
-                                                style: TextStyle(
-                                                  fontSize: MediaQuery.of(context).size.width/25
-                                                ),
-                                                ),
-                                            ),
-                                            Center(
-                                              child: Text("250g"),
-                                            ),
-                                            Center(
-                                              child: Text("\u20B9 30/-"),
-                                            ),
-                                            Center(
-                                              child: RaisedButton(
-                                                color: Colors.green,
-                                                child: Text(
-                                                  "Add to Cart",
-                                                  style:TextStyle(
-                                                    color: Colors.white,
-                                                  )
-                                                ),
-                                                onPressed: (){
+        body: FutureBuilder(
+               future: getProducts(),
+               builder: (BuildContext context, AsyncSnapshot snapshot) {
+                 if (snapshot.hasData) {
+                   List<GetAllProduct> data = snapshot.data;
+                   return GridView.count(
+                   crossAxisCount: 2,
+                   childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
+                   children: data.map(
+                     (product) => Card(
+                       child:Column(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: <Widget>[
+                           SizedBox(height: 10,),
+                           Image.network("$image/"+product.productimage,
+                                   fit: BoxFit.cover,
+                                   width: MediaQuery.of(context).size.width/2-5,
+                                   height:MediaQuery.of(context).size.height/5
+                           ),
+                           
+                           Center(
+                             child: Text(
+                               product.productname,
+                               style: TextStyle(
+                                 fontSize: MediaQuery.of(context).size.width/25
+                               ),
+                               ),
+                           ),
+                           Center(
+                             child: Text("1"+product.unitname),
+                           ),
+                           Center(
+                             child: Text("\u20B9"+product.productprice+"/-"),
+                           ),
+                           Center(
+                             child: RaisedButton(
+                               color: Colors.green,
+                               child: Text(
+                                 "Add to Cart",
+                                 style:TextStyle(
+                                   color: Colors.white,
+                                 )
+                               ),
+                               onPressed: (){
 
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ).toList(),
-                                  
-                              ),
-                            );
-                    }
-                    else{
-                      return Center(
-                        child: CircularProgressIndicator(),
-                        );
-                    }
-                  }
-           )
-          ]
+                               },
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                   ).toList(),
+                     
+                     );
+                 }
+                 else{
+                   return Center(
+                     child: CircularProgressIndicator(),
+                     );
+                 }
+               }
         ),
          
           
@@ -184,7 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
               print("cart.dart");
             }
             if(_currentIndex==4){
-              print("profile.dart");
+              Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
             }
           }),
           items: [
@@ -216,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             BottomNavyBarItem(
               icon: Icon(Icons.settings),
-              title: Text('Settings'),
+              title: Text('Profile'),
               activeColor: Colors.blue,
               textAlign: TextAlign.center,
             ),
@@ -226,30 +198,27 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
   Future<List<GetAllProduct>> getProducts() async {
-    var response = await http.post("$api/allproducts");
-
+    var response = await http.post("$api/allproduct");
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
-    print(dataUser);
     List<GetAllProduct> rp = [];
 
-    for (var row in dataUser) {
-      for (var res in row["Marks"]) {
+    for (var res in dataUser) {
         GetAllProduct data = GetAllProduct(
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
-            res["SubjectName"],
+            res["product_id"],
+            res["product_name"],
+            res["product_price"],
+            res["product_minimum"],
+            res["product_minimumunit"],
+            res["product_image"],
+            res["product_purchase"],
+            res["product_showprice"],
+            res["category_name"],
+            res["unit_name"],
+            res["minimum_name"],
         );
         rp.add(data);
       }
-    }
+
 
     return rp;
   }
