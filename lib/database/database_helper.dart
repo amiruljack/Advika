@@ -1,3 +1,4 @@
+import 'package:Advika/allproduct_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -51,10 +52,18 @@ class DatabaseHelper{
     Database db = await instance.database;
     return await db.insert("$_tableName",row);
   }
-  Future<List<Map<String,dynamic>>> queryAll() async{
-    Database db = await instance.database;
-    return await db.query("$_tableName");
-  }
+  // Future<List<GetAllProduct>> queryAll() async{
+  //   Database db = await instance.database;
+  //   final List<Map> maps = await db.query("$_tableName");
+  //   List<GetAllProduct> product = [];
+  //    if(maps.length>0){
+  //      for(int i = 0;i<maps.length;i++){
+  //        product.add(GetAllProduct.fromMap(maps[i]));
+  //      }
+  //    }
+  //    return product;
+  
+  // }
   Future update (Map<String,dynamic> row) async{
     Database db = await instance.database;
     int id = row['id'];
@@ -64,16 +73,25 @@ class DatabaseHelper{
     Database db = await instance.database;
     return await db.delete("$_tableName",where:"id=?",whereArgs: [id]);
   }
-  Future<int> addProduct(Map<String,dynamic> row ) async{
-    Database db = await instance.database;
-    var product = row['product_id'];
-    int count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $_tableName where $productId = $product'));
-    if(count == 0 ){
-      return await db.insert("$_tableName",row);
-    }
-    else{
-      return 0;
-    }
+  // Future<int> addProduct(Map<String,dynamic> row ) async{
     
-  }
+  //   Database db = await instance.database;
+  //   var product = row['$productId'];
+  //   var count = await db.query(_tableName,where:"$productId=?",whereArgs:[product] );
+  //   print(count);
+  //   if(count == 0 ){
+  //     return await db.insert("$_tableName",row);
+  //   }
+  //   else{
+  //     return 0;
+  //   }
+    
+  // }
+
+Future<int> getcount(id) async {
+      Database db = await instance.database;
+      int  count = Sqflite.firstIntValue(
+          await db.rawQuery("SELECT COUNT(*) FROM $_tableName WHERE $productId=$id"));
+      return count;
+      }
 }

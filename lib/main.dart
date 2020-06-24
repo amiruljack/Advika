@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    fetchProduct();
+   
     _pageController = PageController();
   }
 
@@ -83,46 +83,66 @@ class _MyHomePageState extends State<MyHomePage> {
                    crossAxisCount: 2,
                    childAspectRatio: (MediaQuery.of(context).size.width/ (MediaQuery.of(context).size.height/1.3)),
                    children: data.map(
-                     (product) => Card(
-                       child:Column(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         children: <Widget>[
-                           SizedBox(height: 10,),
-                           Image.network("$image/"+product.productimage,
-                                   fit: BoxFit.cover,
-                                   width: MediaQuery.of(context).size.width/2-5,
-                                   height:MediaQuery.of(context).size.height/5
-                           ),
-                           
-                           Center(
-                             child: Text(
-                               product.productname,
-                               style: TextStyle(
-                                 fontSize: MediaQuery.of(context).size.width/25
-                               ),
-                               ),
-                           ),
-                           Center(
-                             child: Text("1"+product.unitname),
-                           ),
-                           Center(
-                             child: Text("\u20B9"+product.productprice+"/-"),
-                           ),
-                           Center(
-                             child: RaisedButton(
-                               color: Colors.green,
-                               child: Text(
-                                 "Add to Cart",
-                                 style:TextStyle(
-                                   color: Colors.white,
-                                 )
-                               ),
-                               onPressed: (){
-
-                               },
+                     (product) => GestureDetector(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductPage(product.productid)));
+                        },
+                          child: Card(
+                         
+                         child:Column(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: <Widget>[
+                             SizedBox(height: 10,),
+                             Image.network("$image/${product.productimage}",
+                                     fit: BoxFit.cover,
+                                     width: MediaQuery.of(context).size.width/2-5,
+                                     height:MediaQuery.of(context).size.height/5
                              ),
-                           ),
-                         ],
+                             
+                             Center(
+                               child: Text(
+                                 product.productname,
+                                 style: TextStyle(
+                                   fontSize: MediaQuery.of(context).size.width/25
+                                 ),
+                                 ),
+                             ),
+                             Center(
+                               child: Text("1"+product.unitname),
+                             ),
+                             Center(
+                               child: Text("\u20B9"+product.productprice+"/-"),
+                             ),
+                             Center(
+                               child: RaisedButton(
+                                 color: Colors.green,
+                                 child: Text(
+                                   "Add to Cart",
+                                   style:TextStyle(
+                                     color: Colors.white,
+                                   )
+                                 ),
+                                 onPressed: ()async{
+                                   int i = await DatabaseHelper.instance.insert({
+                                    DatabaseHelper.productId:product.productid,
+                                    DatabaseHelper.productName:product.productname,
+                                    DatabaseHelper.productImage:product.productimage,
+                                    DatabaseHelper.productPrice:product.productprice,
+                                    DatabaseHelper.minimumQty:product.productminimum,
+                                    DatabaseHelper.minimumUnit:product.productminimumunit,
+                                    DatabaseHelper.categoryName:product.categoryname,
+                                    DatabaseHelper.unitName:product.unitname,
+                                   });
+                                   print(i);
+                                   setState(() {
+                                     var plug = false;
+                                   });
+
+                                 },
+                               ),
+                             ),
+                           ],
+                         ),
                        ),
                      ),
                    ).toList(),
@@ -208,17 +228,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     for (var res in dataUser) {
         GetAllProduct data = GetAllProduct(
-            res["product_id"],
-            res["product_name"],
-            res["product_price"],
-            res["product_minimum"],
-            res["product_minimumunit"],
-            res["product_image"],
-            res["product_purchase"],
-            res["product_showprice"],
-            res["category_name"],
-            res["unit_name"],
-            res["minimum_name"],
+            res['product_id'],
+            res['product_name'],
+            res['product_price'],
+            res['product_minimum'],
+            res['product_minimumunit'],
+            res['product_image'],
+            res['category_name'],
+            res['unit_name']
         );
         rp.add(data);
       }
@@ -226,23 +243,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return rp;
   }
-  fetchProduct()async {
-    var response = await http.post("$api/allproduct");
-    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
-    for (var res in dataUser) {
-    int i = await DatabaseHelper.instance.insert({
-      DatabaseHelper.productId    : res["product_id"],
-      DatabaseHelper.productName  : res["product_name"],
-      DatabaseHelper.productImage : res["product_image"],
-      DatabaseHelper.productPrice : res["product_price"],
-      DatabaseHelper.unitName     : res["unit_name"],
-      DatabaseHelper.categoryName : res["category_name"],
-      DatabaseHelper.minimumQty   : res["product_minimum"],
-      DatabaseHelper.minimumUnit  : res["product_minimumunit"],
-     });
-     print(i);
-    }
-
-  }
+  
 }
   

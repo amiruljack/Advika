@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
 class ProductPage extends StatefulWidget {
-  ProductPage({Key key}) : super(key: key);
-
+  ProductPage(this.productid, {Key key}) : super(key: key);
+  final String productid;
   @override
   _ProductPageState createState() => _ProductPageState();
 }
@@ -31,6 +31,7 @@ class _ProductPageState extends State<ProductPage> {
   }
   @override
   Widget build(BuildContext context) {
+    print(widget.productid);
      const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
