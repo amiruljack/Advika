@@ -221,28 +221,9 @@ class _SignupPageState extends State<SignupPage> {
       )),
     );
   }
-Future<Null> _selectDob(BuildContext context) async{
-  final DateTime _returndate = await showDatePicker(
-    context: context, 
-    initialDate:DateTime(2020),
-    firstDate:   DateTime(1920) ,   
-    lastDate: DateTime(2030),
-    builder: (context , child){
-      return child;
-    }
-    );
-  if(_returndate!=null){
-    setState(() {
-      // dobController.text= new DateFormat('dd/MM/yyyy').format(_returndate);
-    });
-  }
-}
+
   void _signup() async {
-    // var result = await Connectivity().checkConnectivity();
-    // if (result == ConnectivityResult.none) {
-    //   _showDilog('No Internet', "You're not connected to a network");
-    //   return null;
-    // }
+    
     if (nameController.text.length == 0) {
       _showDilog('Error', "Enter valid Name");
       return null;
@@ -259,22 +240,9 @@ Future<Null> _selectDob(BuildContext context) async{
       _showDilog('Error', "Enter valid Number");
       return null;
     }
-    if (dobController.text.length == 0) {
-      _showDilog('Error', "Enter valid Dob");
-      return null;
-    }
-    if (addressController.text.length == 0) {
-      _showDilog('Error', "Enter valid Address");
-      return null;
-    }
-    if (cityController.text.length == 0) {
-      _showDilog('Error', "Enter valid City");
-      return null;
-    }
-    if (countryController.text.length == 0) {
-      _showDilog('Error', "Enter valid Country");
-      return null;
-    }
+   
+    
+   
     var response = await http.post("$api/register.php", body: {
       "name": nameController.text,
       "email": emailController.text,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
+import 'database/database_helper.dart';
 import 'login.dart';
 import 'package/bottomNav.dart';
 import 'path.dart';
@@ -39,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    fetchProduct();
     _pageController = PageController();
   }
 
@@ -57,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           actions: <Widget>[
             IconButton(onPressed: (){
               Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
@@ -223,4 +226,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return rp;
   }
+  fetchProduct()async {
+    var response = await http.post("$api/allproduct");
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+    for (var res in dataUser) {
+    int i = await DatabaseHelper.instance.insert({
+      DatabaseHelper.productId    : res["product_id"],
+      DatabaseHelper.productName  : res["product_name"],
+      DatabaseHelper.productImage : res["product_image"],
+      DatabaseHelper.productPrice : res["product_price"],
+      DatabaseHelper.unitName     : res["unit_name"],
+      DatabaseHelper.categoryName : res["category_name"],
+      DatabaseHelper.minimumQty   : res["product_minimum"],
+      DatabaseHelper.minimumUnit  : res["product_minimumunit"],
+     });
+     print(i);
+    }
+
+  }
 }
+  
