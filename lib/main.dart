@@ -4,7 +4,6 @@ import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'package/bottomNav.dart';
-import 'package/carousel_slider.dart';
 import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart'as http;
@@ -36,12 +35,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 2;
   PageController _pageController;
-  final List<String> imgList = [
-    'http://w-safe.ml/advika/banner1.png',
-    'http://w-safe.ml/advika/banner2.jpg',
-    'http://w-safe.ml/advika/banner3.png',
-    'http://w-safe.ml/advika/banner4.jpg',
-  ];
+ 
   @override
   void initState() {
     super.initState();
@@ -63,6 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       home: Scaffold(
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(onPressed: (){
+              Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
+            },
+            icon:Icon(Icons.supervised_user_circle)
+            )
+          ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
