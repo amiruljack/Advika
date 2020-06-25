@@ -248,10 +248,7 @@ class _SignupPageState extends State<SignupPage> {
       "email": emailController.text,
       "password": passwordController.text,
       "number": numberController.text,
-      "dob": dobController.text,
-      "address": addressController.text,
-      "city": cityController.text,
-      "country": countryController.text,
+     ""
 
     });
     print(response.body);

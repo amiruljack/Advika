@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:Advika/product.dart';
@@ -40,13 +41,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-   
+   fetch();
     _pageController = PageController();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+
     super.dispose();
   }
 
@@ -225,7 +227,10 @@ class _MyHomePageState extends State<MyHomePage> {
     var response = await http.post("$api/allproduct");
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
     List<GetAllProduct> rp = [];
+  //   const oneSec = const Duration(seconds:5);
+  // new Timer.periodic(oneSec, (Timer t) => setState((){
 
+  // }));
     for (var res in dataUser) {
         GetAllProduct data = GetAllProduct(
             res['product_id'],
@@ -243,6 +248,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return rp;
   }
-  
-}
-  
+        fetch()async {
+          const oneSec = const Duration(seconds:5);
+        new Timer.periodic(oneSec, (Timer t) => setState((){
+          
+          getProducts();
+        
+
+        }));
+      }
+} 
