@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       home: new Scaffold(
         appBar: AppBar(
+          centerTitle: true ,
       actions: <Widget>[
         IconButton(onPressed: (){
           Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
@@ -71,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextField(
+                      autocorrect: false,
                       controller: emailController,
                       decoration: InputDecoration(
                           labelText: 'EMAIL',
@@ -153,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => RegisterPage()));
+                            builder: (context) => SignupPage()));
                           },
                           child: Center(
                             child: Row(

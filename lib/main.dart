@@ -11,6 +11,8 @@ import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart'as http;
 
+import 'profile.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -189,8 +191,13 @@ class _MyHomePageState extends State<MyHomePage> {
               print("cart.dart");
             }
             if(_currentIndex==4){
-              Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+             if(isLogin!=1) {
+              Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
+              
+            }
+            else {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
+            }
             }
           }),
           items: [
