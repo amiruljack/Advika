@@ -1,333 +1,137 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'login.dart';
-import 'main.dart';
+
 import 'path.dart';
-
-class SignupPage extends StatefulWidget {
+ 
+class RegisterPage extends StatefulWidget {
+  RegisterPage() : super();
+ 
+  final String title = "Upload Image Demo";
+ 
   @override
-  _SignupPageState createState() => _SignupPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
-
-class _SignupPageState extends State<SignupPage> {
-  final formkey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final numberController = TextEditingController();
-  final passwordController = TextEditingController();
-
-
-  String name = '';
-  String email = '';
-  String number = '';
-  String password = '';
-  String msg = '';
+ 
+class RegisterPageState extends State<RegisterPage> {
+  //
+  static final String uploadEndPoint =
+      '$api/upload_image';
   Future<File> file;
   String status = '';
   String base64Image;
   File tmpFile;
   String errMessage = 'Error Uploading Image';
-
-
- static final String uploadEndPoint =
-      '$api/upload_image';
-  @override
-  Widget build(BuildContext context) {
-    const PrimaryColor = const Color(0xFF34a24b);
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: PrimaryColor,
-      ),
-          home: Scaffold(
-            
-            appBar: AppBar(
-              centerTitle: true,
-            actions: <Widget>[
-              IconButton(onPressed: (){
-                Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-              icon:Icon(Icons.supervised_user_circle)
-              )
-            ],
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Advika"),
-              ],
-            ),
-          ),
-          //resizeToAvoidBottomPadding: false,
-          body: Form(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-              child: Stack(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 28.0),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          width: 100,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-                 SizedBox(height: 20.0),
-                Container(
-                    padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          controller: nameController,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                              labelText: 'Full Name',
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
-                              // hintText: 'EMAIL',
-                              // hintStyle: ,
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.green))),
-                        ),
-                        SizedBox(height: 10.0),
-                        TextField(
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                              labelText: 'EMAIL',
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
-                              // hintText: 'EMAIL',
-                              // hintStyle: ,
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.green))),
-                        ),
-                        SizedBox(height: 10.0),
-                        TextField(
-                          keyboardType: TextInputType.multiline,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                              labelText: 'PASSWORD ',
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.green))),
-                          obscureText: true,
-                        ),
-                        SizedBox(height: 10.0),
-                        TextField(
-                          controller: numberController,
-                          decoration: InputDecoration(
-                              labelText: 'Contact Number ',
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.green))),
-                        ),
-                        SizedBox(height: 10.0),
-                        RaisedButton(
-                        onPressed: chooseImage,
-                        child: Text(
-                          "upload your image",
-                          style:TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                        ),
-                          ),
-                        SizedBox(height: 50.0),
-                        Container(
-                            height: 40.0,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              shadowColor: Colors.greenAccent,
-                              color: Colors.green,
-                              elevation: 7.0,
-                              child: FlatButton(
-                                onPressed: () {
-                                  startUpload();
-                                  // _signup();
-                                },
-                                child: Center(
-                                  child: Text(
-                                    'SIGNUP',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat'),
-                                  ),
-                                ),
-                              ),
-                            )),
-                        SizedBox(height: 20.0),
-                        Container(
-                          height: 40.0,
-                          color: Colors.transparent,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.black,
-                                    style: BorderStyle.solid,
-                                    width: 1.0),
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Center(
-                                child: Text('Go Back',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Montserrat')),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ),
-                // SizedBox(height: 15.0),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: <Widget>[
-                //     Text(
-                //       'New to Spotify?',
-                //       style: TextStyle(
-                //         fontFamily: 'Montserrat',
-                //       ),
-                //     ),
-                //     SizedBox(width: 5.0),
-                //     InkWell(
-                //       child: Text('Register',
-                //           style: TextStyle(
-                //               color: Colors.green,
-                //               fontFamily: 'Montserrat',
-                //               fontWeight: FontWeight.bold,
-                //               decoration: TextDecoration.underline)),
-                //     )
-                //   ],
-                // )
-                SizedBox(height: 30.0),
-              ]),
-        ),
-      )),
-    );
-  }
-
-  void _signup() async {
-    
-    if (nameController.text.length == 0) {
-      _showDilog('Error', "Enter valid Name");
-      return null;
-    }
-    if (emailController.text.length == 0) {
-      _showDilog('Error', "Enter valid Email");
-      return null;
-    }
-    if (passwordController.text.length == 0) {
-      _showDilog('Error', "Enter valid Password ");
-      return null;
-    }
-    if (numberController.text.length == 0) {
-      _showDilog('Error', "Enter valid Number");
-      return null;
-    }
-   
-    
-   
-    var response = await http.post("$api/register", body: {
-      "name": nameController.text,
-      "email": emailController.text,
-      "password": passwordController.text,
-      "mobile": numberController.text,
-     
-
-    });
-    print(response.body);
-    var datauser = json.decode(response.body);
-    if (datauser.length == 0) {
-      _showDilog('unautorized access', "Enter valid credential");
-      return null;
-    } else {
-      if (datauser['flag'] == '1') {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      } else {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        pref.setString("email", emailController.text);
-        pref.setString("number", numberController.text);
-         Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
-
-      }
-
-    }
-  }
-chooseImage() {
+ 
+  chooseImage() {
     setState(() {
       file = ImagePicker.pickImage(source: ImageSource.gallery);
     });
-}
-startUpload() {
-  setStatus('Uploading Image...');
-  if (null == tmpFile) {
-    setStatus(errMessage);
-    return;
+    setStatus('');
   }
-  String fileName = tmpFile.path.split('/').last;
-  upload(fileName);
-}
- setStatus(String message) {
+ 
+  setStatus(String message) {
     setState(() {
       status = message;
     });
   }
-upload(String fileName) {
-  http.post(uploadEndPoint, body: {
-    "image": base64Image,
-    "name": fileName,
-  }).then((result) {
-    setStatus(result.statusCode == 200 ? result.body : errMessage);
-  }).catchError((error) {
-    setStatus(error);
-  });
-}
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
+ 
+  startUpload() {
+    setStatus('Uploading Image...');
+    if (null == tmpFile) {
+      setStatus(errMessage);
+      return;
+    }
+    String fileName = tmpFile.path.split('/').last;
+    upload(fileName);
+  }
+ 
+  upload(String fileName) {
+    http.post(uploadEndPoint, body: {
+      "image": base64Image,
+      "name": fileName,
+    }).then((result) {
+      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    }).catchError((error) {
+      setStatus(error);
+    });
+  }
+ 
+  Widget showImage() {
+    return FutureBuilder<File>(
+      future: file,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            null != snapshot.data) {
+          tmpFile = snapshot.data;
+          base64Image = base64Encode(snapshot.data.readAsBytesSync());
+          return Flexible(
+            child: Image.file(
+              snapshot.data,
+              fit: BoxFit.fill,
+            ),
           );
-        });
+        } else if (null != snapshot.error) {
+          return const Text(
+            'Error Picking Image',
+            textAlign: TextAlign.center,
+          );
+        } else {
+          return const Text(
+            'No Image Selected',
+            textAlign: TextAlign.center,
+          );
+        }
+      },
+    );
+  }
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Upload Image Demo"),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(30.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            OutlineButton(
+              onPressed: chooseImage,
+              child: Text('Choose Image'),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            showImage(),
+            SizedBox(
+              height: 20.0,
+            ),
+            OutlineButton(
+              onPressed: startUpload,
+              child: Text('Upload Image'),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              status,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w500,
+                fontSize: 20.0,
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
