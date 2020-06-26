@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'allproduct_model.dart';
+import 'database/database_helper.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,9 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   int productid;
+  int ind=0;
   int _currentIndex = 2;
+ 
   PageController _pageController;
   final qtyController = TextEditingController();
   final List<String> imgList = [
@@ -63,6 +66,7 @@ class _ProductPageState extends State<ProductPage> {
                 return ListView.builder(
                     itemCount: snapshot.hasData ? snapshot.data.length : 0,
                     itemBuilder: (BuildContext context, int index) {
+                     
                       return
                       Stack(
                         children: <Widget>[
@@ -100,7 +104,7 @@ class _ProductPageState extends State<ProductPage> {
                                               children: <Widget>[
                                                 Text.rich(
                                                   TextSpan(children: [
-                                                    TextSpan(text: "Potato")
+                                                    TextSpan(text: snapshot.data[index].productname)
                                                   ]),
                                                   style: TextStyle(
                                                       color: Colors.grey,
@@ -112,19 +116,14 @@ class _ProductPageState extends State<ProductPage> {
                                           Column(
                                             children: <Widget>[
                                               Text(
-                                                "\u20B9 20",
+                                                "\u20B9"+snapshot.data[index].productprice+"/"+snapshot.data[index].unitname,
                                                 style: TextStyle(
                                                     color: Colors.purple,
                                                     fontWeight:
                                                         FontWeight.bold,
                                                     fontSize: 20.0),
                                               ),
-                                              Text(
-                                                "/per kilo",
-                                                style: TextStyle(
-                                                    fontSize: 12.0,
-                                                    color: Colors.grey),
-                                              )
+                                              
                                             ],
                                           )
                                         ],
@@ -133,7 +132,7 @@ class _ProductPageState extends State<ProductPage> {
                                         controller: qtyController,
                                         decoration: InputDecoration(
                                             labelText:
-                                                'Enter Qty in KG Minimum(250g) ',
+                                                'Enter Qty in ${snapshot.data[index].unitname} Minimum(${snapshot.data[index].productminimum+" "+snapshot.data[index].productminimumunit}) ',
                                             labelStyle: TextStyle(
                                                 fontFamily: 'Montserrat',
                                                 fontWeight: FontWeight.bold,
@@ -147,7 +146,7 @@ class _ProductPageState extends State<ProductPage> {
                                       const SizedBox(height: 30.0),
                                       SizedBox(
                                         width: double.infinity,
-                                        child: RaisedButton(
+                                        child: ind==0? RaisedButton(
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(
@@ -164,7 +163,42 @@ class _ProductPageState extends State<ProductPage> {
                                             vertical: 16.0,
                                             horizontal: 32.0,
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () async{
+                                             int i = await DatabaseHelper.instance.insert({
+                                              DatabaseHelper.productId:snapshot.data[index].productid,
+                                              DatabaseHelper.productName:snapshot.data[index].productname,
+                                              DatabaseHelper.productImage:snapshot.data[index].productimage,
+                                              DatabaseHelper.productPrice:snapshot.data[index].productprice,
+                                              DatabaseHelper.minimumQty:snapshot.data[index].productminimum,
+                                              DatabaseHelper.minimumUnit:snapshot.data[index].productminimumunit,
+                                              DatabaseHelper.categoryName:snapshot.data[index].categoryname,
+                                              DatabaseHelper.unitName:snapshot.data[index].unitname,
+                                            });
+                                            setState(() {
+                                           ind=1;
+                                            });
+                                            _showDilog("Success", "product Successfully Added to your Cart");
+
+                                          },
+                                        ):RaisedButton(
+                                        
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      30.0)),
+                                          color: Colors.grey,
+                                          textColor: Colors.white,
+                                          child: Text(
+                                            "Order Now",
+                                            style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.normal),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16.0,
+                                            horizontal: 32.0,
+                                          ),
+                                          onPressed: null
                                         ),
                                       ),
                                     ],
@@ -260,7 +294,7 @@ class _ProductPageState extends State<ProductPage> {
           res['product_name'],
           res['product_price'],
           res['product_minimum'],
-          res['product_minimumunit'],
+          res['minimum_name'],
           res['product_image'],
           res['category_name'],
           res['unit_name']);
@@ -268,5 +302,22 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     return rp;
+  }
+  void _showDilog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(text),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
   }
 }
