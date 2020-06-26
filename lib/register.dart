@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'login.dart';
 import 'main.dart';
 import 'path.dart';
@@ -18,20 +20,22 @@ class _SignupPageState extends State<SignupPage> {
   final emailController = TextEditingController();
   final numberController = TextEditingController();
   final passwordController = TextEditingController();
-  final addressController = TextEditingController();
-  final cityController = TextEditingController();
-  final countryController = TextEditingController();
-  final dobController = TextEditingController();
+
 
   String name = '';
   String email = '';
   String number = '';
   String password = '';
-  String address = '';
-  String city = '';
-  String country = '';
   String msg = '';
+  Future<File> file;
+  String status = '';
+  String base64Image;
+  File tmpFile;
+  String errMessage = 'Error Uploading Image';
 
+
+ static final String uploadEndPoint =
+      '$api/upload_image';
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
@@ -142,7 +146,16 @@ class _SignupPageState extends State<SignupPage> {
                                   borderSide: BorderSide(color: Colors.green))),
                         ),
                         SizedBox(height: 10.0),
-                        
+                        RaisedButton(
+                        onPressed: chooseImage,
+                        child: Text(
+                          "upload your image",
+                          style:TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                        ),
+                          ),
                         SizedBox(height: 50.0),
                         Container(
                             height: 40.0,
@@ -153,7 +166,8 @@ class _SignupPageState extends State<SignupPage> {
                               elevation: 7.0,
                               child: FlatButton(
                                 onPressed: () {
-                                  _signup();
+                                  startUpload();
+                                  // _signup();
                                 },
                                 child: Center(
                                   child: Text(
@@ -243,12 +257,12 @@ class _SignupPageState extends State<SignupPage> {
    
     
    
-    var response = await http.post("$api/register.php", body: {
+    var response = await http.post("$api/register", body: {
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text,
-      "number": numberController.text,
-     ""
+      "mobile": numberController.text,
+     
 
     });
     print(response.body);
@@ -257,9 +271,9 @@ class _SignupPageState extends State<SignupPage> {
       _showDilog('unautorized access', "Enter valid credential");
       return null;
     } else {
-      if (datauser[0]['msg'] == 'olduser') {
+      if (datauser['flag'] == '1') {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyHomePage()));
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
         SharedPreferences pref = await SharedPreferences.getInstance();
         pref.setString("email", emailController.text);
@@ -270,7 +284,35 @@ class _SignupPageState extends State<SignupPage> {
 
     }
   }
-
+chooseImage() {
+    setState(() {
+      file = ImagePicker.pickImage(source: ImageSource.gallery);
+    });
+}
+startUpload() {
+  setStatus('Uploading Image...');
+  if (null == tmpFile) {
+    setStatus(errMessage);
+    return;
+  }
+  String fileName = tmpFile.path.split('/').last;
+  upload(fileName);
+}
+ setStatus(String message) {
+    setState(() {
+      status = message;
+    });
+  }
+upload(String fileName) {
+  http.post(uploadEndPoint, body: {
+    "image": base64Image,
+    "name": fileName,
+  }).then((result) {
+    setStatus(result.statusCode == 200 ? result.body : errMessage);
+  }).catchError((error) {
+    setStatus(error);
+  });
+}
   void _showDilog(String title, String text) {
     showDialog(
         context: context,

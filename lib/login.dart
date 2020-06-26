@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:Advika/main.dart';
 import 'package:Advika/register.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http ;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'path.dart';
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
@@ -118,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                         elevation: 7.0,
                         child: FlatButton(
                           onPressed: () {
-                            // _login();
+                            _login();
                           },
                           child: Center(
                             child: Text(
@@ -169,37 +176,37 @@ class _LoginPageState extends State<LoginPage> {
                     
                    
                     SizedBox(height: 20.0),
-                   Container(
-                      height: 40.0,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(20.0),
-                        shadowColor: Colors.black,
-                        borderOnForeground: true,
-                        color: Colors.redAccent,
-                        elevation: 7.0,
-                        child: FlatButton(
-                          onPressed: () {
-                            // _signIn();
-                          },
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(child: Image.asset('assets/google.png') , height: 25, width: 25,),
-                            SizedBox(width: 10.0),
-                                Text(
-                                  'Log in with Google',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Montserrat'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  //  Container(
+                  //     height: 40.0,
+                  //     child: Material(
+                  //       borderRadius: BorderRadius.circular(20.0),
+                  //       shadowColor: Colors.black,
+                  //       borderOnForeground: true,
+                  //       color: Colors.redAccent,
+                  //       elevation: 7.0,
+                  //       child: FlatButton(
+                  //         onPressed: () {
+                  //           // _signIn();
+                  //         },
+                  //         child: Center(
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             children: <Widget>[
+                  //               Container(child: Image.asset('assets/google.png') , height: 25, width: 25,),
+                  //           SizedBox(width: 10.0),
+                  //               Text(
+                  //                 'Log in with Google',
+                  //                 style: TextStyle(
+                  //                     color: Colors.white,
+                  //                     fontWeight: FontWeight.bold,
+                  //                     fontFamily: 'Montserrat'),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                   ],
                 )),
             SizedBox(height: 15.0),
@@ -231,5 +238,50 @@ class _LoginPageState extends State<LoginPage> {
         ),
       )),
     );
+  }
+  void _login() async {
+    //_askPermission();
+
+    // var result = await Connectivity().checkConnectivity();
+    // if (result == ConnectivityResult.none) {
+    //   _showDilog('No Internet', "You're not connected to a network");
+    //   return null;
+    // }
+    var response = await http.post("$api/login", body: {
+      "email": emailController.text,
+      "password": passwordController.text,
+    });
+    // print(response.body);
+    var datauser = json.decode(response.body);
+    if (datauser.length == 0) {
+      _showDilog('Warning', "register your self");
+    } else {
+       if (datauser['flag'] == '1') {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        pref.setString("email", emailController.text);
+        pref.setBool("isLogin", true);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyApp()));
+      } else {
+        _showDilog('Warning', "register your self");
+      }
+    }
+  }
+ void _showDilog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(text),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
   }
 }

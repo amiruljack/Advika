@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'database/database_helper.dart';
 import 'login.dart';
 import 'package/bottomNav.dart';
@@ -37,11 +38,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 2;
   PageController _pageController;
+  var isLogin;
  
   @override
   void initState() {
     super.initState();
    fetch();
+   _isLogin();
     _pageController = PageController();
   }
 
@@ -63,11 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
-            IconButton(onPressed: (){
+            if(isLogin!=1) IconButton(onPressed: (){
               Navigator.push(context,MaterialPageRoute(builder: (context) => LoginPage()));
+              
             },
             icon:Icon(Icons.supervised_user_circle)
-            )
+            )else IconButton(onPressed: (){
+              logout();
+            },
+            icon:Icon(Icons.power_settings_new)
+            ),
           ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -248,13 +256,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return rp;
   }
-        fetch()async {
-          const oneSec = const Duration(seconds:5);
-        new Timer.periodic(oneSec, (Timer t) => setState((){
-          
-          getProducts();
-        
-
-        }));
-      }
+    fetch()async {
+      const oneSec = const Duration(seconds:5);
+    new Timer.periodic(oneSec, (Timer t) => setState((){
+      
+      getProducts();
+    
+    }));
+  }
+  Future _isLogin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+  bool login = pref.getBool("isLogin")??false;
+  
+    if (login) {
+     setState(() {
+        isLogin = 1 ;
+      });
+    }
+  }
+  logout() async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isLogin",false);
+    setState(() {
+        isLogin = 0 ;
+      });
+  }
 } 
