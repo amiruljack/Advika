@@ -256,7 +256,6 @@ class _SignupPageState extends State<SignupPage> {
      
 
     });
-    print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
       _showDilog('unautorized access', "Enter valid credential");

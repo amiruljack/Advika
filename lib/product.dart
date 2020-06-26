@@ -1,7 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'allproduct_model.dart';
 import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
+import 'package:http/http.dart' as http;
+import 'path.dart';
+
 class ProductPage extends StatefulWidget {
   ProductPage(this.productid, {Key key}) : super(key: key);
   final String productid;
@@ -10,8 +17,10 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  int productid;
   int _currentIndex = 2;
   PageController _pageController;
+  final qtyController = TextEditingController();
   final List<String> imgList = [
     'http://w-safe.ml/advika/banner1.png',
     'http://w-safe.ml/advika/banner2.jpg',
@@ -21,6 +30,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
+    getProducts();
     _pageController = PageController();
   }
 
@@ -29,10 +39,10 @@ class _ProductPageState extends State<ProductPage> {
     _pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.productid);
-     const PrimaryColor = const Color(0xFF34a24b);
+    const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
         primaryColor: PrimaryColor,
@@ -46,28 +56,132 @@ class _ProductPageState extends State<ProductPage> {
             ],
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-              ),
-              items: imgList
-                  .map((item) => Container(
-                        child: Center(
-                            child: Image.network(item,
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height / 5)),
-                      ))
-                  .toList(),
-            ),
-            
-            
-          ],
-        ),
-        
+        body: FutureBuilder(
+            future: getProducts(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.hasData ? snapshot.data.length : 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      return
+                      Stack(
+                        children: <Widget>[
+                          Container(
+                              height: 400,
+                              child: Image.network(
+                                  "$image/"+snapshot.data[index].productimage,
+                                  fit: BoxFit.cover,
+                                  height:MediaQuery.of(context).size.height/2.5,
+                                  width:MediaQuery.of(context).size.width)),
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.only(
+                                top: 16.0, bottom: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height /
+                                      2,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(32.0),
+                                  color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text.rich(
+                                                  TextSpan(children: [
+                                                    TextSpan(text: "Potato")
+                                                  ]),
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 22.0),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Column(
+                                            children: <Widget>[
+                                              Text(
+                                                "\u20B9 20",
+                                                style: TextStyle(
+                                                    color: Colors.purple,
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                    fontSize: 20.0),
+                                              ),
+                                              Text(
+                                                "/per kilo",
+                                                style: TextStyle(
+                                                    fontSize: 12.0,
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      TextField(
+                                        controller: qtyController,
+                                        decoration: InputDecoration(
+                                            labelText:
+                                                'Enter Qty in KG Minimum(250g) ',
+                                            labelStyle: TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey),
+                                            focusedBorder:
+                                                UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color:
+                                                            Colors.green))),
+                                      ),
+                                      const SizedBox(height: 30.0),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: RaisedButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      30.0)),
+                                          color: PrimaryColor,
+                                          textColor: Colors.white,
+                                          child: Text(
+                                            "Order Now",
+                                            style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.normal),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16.0,
+                                            horizontal: 32.0,
+                                          ),
+                                          onPressed: () {},
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    });
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _currentIndex,
           showElevation: true,
@@ -75,19 +189,19 @@ class _ProductPageState extends State<ProductPage> {
           curve: Curves.easeInBack,
           onItemSelected: (index) => setState(() {
             _currentIndex = index;
-            if(_currentIndex==0){
+            if (_currentIndex == 0) {
               print("order.dart");
             }
-            if(_currentIndex==1){
+            if (_currentIndex == 1) {
               print("search.dart");
             }
-            if(_currentIndex==2){
+            if (_currentIndex == 2) {
               print("home.dart");
             }
-            if(_currentIndex==3){
+            if (_currentIndex == 3) {
               print("cart.dart");
             }
-            if(_currentIndex==4){
+            if (_currentIndex == 4) {
               print("profile.dart");
             }
           }),
@@ -128,5 +242,31 @@ class _ProductPageState extends State<ProductPage> {
         ),
       ),
     );
+  }
+
+  Future<List<GetAllProduct>> getProducts() async {
+    var response = await http.post("$api/get_products", body: {
+      "productid": widget.productid,
+    });
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+    List<GetAllProduct> rp = [];
+    //   const oneSec = const Duration(seconds:5);
+    // new Timer.periodic(oneSec, (Timer t) => setState((){
+
+    // }));
+    for (var res in dataUser) {
+      GetAllProduct data = GetAllProduct(
+          res['product_id'],
+          res['product_name'],
+          res['product_price'],
+          res['product_minimum'],
+          res['product_minimumunit'],
+          res['product_image'],
+          res['category_name'],
+          res['unit_name']);
+      rp.add(data);
+    }
+
+    return rp;
   }
 }

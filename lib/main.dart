@@ -145,7 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     DatabaseHelper.categoryName:product.categoryname,
                                     DatabaseHelper.unitName:product.unitname,
                                    });
-                                   print(i);
                                    setState(() {
                                      var plug = false;
                                    });
@@ -185,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
               print("search.dart");
             }
             if(_currentIndex==2){
-              print("home.dart");
+              
             }
             if(_currentIndex==3){
               print("cart.dart");
