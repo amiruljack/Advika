@@ -268,12 +268,10 @@ class _ProfilePageState extends State<ProfilePage> {
    getProfile() async {
      SharedPreferences pref = await SharedPreferences.getInstance();
      var $email = pref.getString("email");
-     print($email);
     var response = await http.post("$api/getProfile",body: {
       "email":$email,
     });
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
-    print(dataUser);
     nameController.text= dataUser[0]['customer_name'];
     emailController.text = dataUser[0]['customer_email'];
     numberController.text= dataUser[0]['customer_mobile'];
@@ -306,7 +304,6 @@ class _ProfilePageState extends State<ProfilePage> {
       "oldemail":$email,
      
     });
-    print(response.body);
     var datauser = json.decode(response.body);
     if(datauser["flag"]=="1"){
       setState(() {

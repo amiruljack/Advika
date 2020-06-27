@@ -16,6 +16,7 @@ class DatabaseHelper{
   static final categoryName   =     'categoryname';
   static final minimumQty     =     'minimumqty';
   static final minimumUnit    =     'minimumunit';
+  static final orderQty       =     'orderqty';
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -42,7 +43,8 @@ class DatabaseHelper{
           $unitName TEXT NOT NULL,
           $categoryName TEXT NOT NULL,
           $minimumQty TEXT NOT NULL,
-          $minimumUnit TEXT NOT NULL
+          $minimumUnit TEXT NOT NULL,
+          $orderQty TEXT NOT NULL
           )
       '''
       );
@@ -64,6 +66,19 @@ class DatabaseHelper{
   //    return product;
   
   // }
+   Future<int> getProductById(int id) async {
+    Database db = await instance.database;
+    // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
+    final result = await db.rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $id');
+    final count = Sqflite.firstIntValue(result);
+    if(count>0){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+    
+  }
   Future update (Map<String,dynamic> row) async{
     Database db = await instance.database;
     int id = row['id'];

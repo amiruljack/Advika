@@ -34,6 +34,7 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
     getProducts();
+    checkProduct(int.parse(widget.productid));
     _pageController = PageController();
   }
 
@@ -302,6 +303,14 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     return rp;
+  }
+  checkProduct(int id) async{
+    int check = await DatabaseHelper.instance.getProductById(id);
+    if(check > 0){
+      setState(() {
+        ind = 1;
+      });
+    }
   }
   void _showDilog(String title, String text) {
     showDialog(
