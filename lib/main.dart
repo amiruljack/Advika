@@ -213,7 +213,10 @@ class _MyHomePageState extends State<MyHomePage> {
             if (_currentIndex == 1) {
               print("search.dart");
             }
-            if (_currentIndex == 2) {}
+            if (_currentIndex == 2) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyApp()));
+            }
             if (_currentIndex == 3) {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => CartPage()));

@@ -38,18 +38,18 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE $_tableName (
-          $id INTEGER PRIMARY KEY,
-          $productId TEXT NOT NULL,
-          $productName TEXT NOT NULL,
-          $productImage TEXT NOT NULL,
-          $productPrice TEXT NOT NULL,
-          $unitName TEXT NOT NULL,
-          $categoryName TEXT NOT NULL,
-          $minimumQty TEXT NOT NULL,
-          $minimumUnit TEXT NOT NULL,
-          $orderQty TEXT NOT NULL
-          )
+        CREATE TABLE $_tableName (
+            $id INTEGER PRIMARY KEY,
+            $productId TEXT NOT NULL,
+            $productName TEXT NOT NULL,
+            $productImage TEXT NOT NULL,
+            $productPrice TEXT NOT NULL,
+            $unitName TEXT NOT NULL,
+            $categoryName TEXT NOT NULL,
+            $minimumQty TEXT NOT NULL,
+            $minimumUnit TEXT NOT NULL,
+            $orderQty TEXT NOT NULL
+        )
       ''');
   }
 
@@ -139,9 +139,14 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     var res = await db.query(_tableName);
-    print("list");
-    List<Product> list = res.map((c) => Product.fromMap(c)).toList();
+    // print(res);
 
-    return list;
+    try {
+      List<Product> list = res.map((c) => Product.fromMap(c)).toList();
+      return list;
+    } catch (e) {
+      print(e);
+    }
+    print(res);
   }
 }
