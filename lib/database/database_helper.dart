@@ -139,8 +139,9 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     var res = await db.query(_tableName);
-    List<Product> list = res.map((c) => Product.fromMap(c)).toList();
     print("list");
+    List<Product> list = res.map((c) => Product.fromMap(c)).toList();
+
     return list;
   }
 }
