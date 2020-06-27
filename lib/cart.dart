@@ -87,7 +87,7 @@ class _CartPageState extends State<CartPage> {
                                   children: <Widget>[
                                     Center(
                                       child: Text(
-                                        product.productName,
+                                        "Prroduct Name:" + product.productName,
                                         style: TextStyle(
                                             fontSize: MediaQuery.of(context)
                                                     .size
@@ -96,12 +96,14 @@ class _CartPageState extends State<CartPage> {
                                       ),
                                     ),
                                     Center(
-                                      child: Text("1" + product.unitName),
+                                      child:
+                                          Text("Order Qty:" + product.orderQty),
                                     ),
                                     Center(
                                       child: Text("\u20B9" +
                                           product.productPrice +
-                                          "/-"),
+                                          "/" +
+                                          product.unitName),
                                     ),
                                     Center(
                                       child: ind == 0

@@ -139,14 +139,13 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     var res = await db.query(_tableName);
-    // print(res);
-
+    // print(res);r
+    print(res);
     try {
       List<Product> list = res.map((c) => Product.fromMap(c)).toList();
       return list;
     } catch (e) {
       print(e);
     }
-    print(res);
   }
 }
