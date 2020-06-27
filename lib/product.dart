@@ -305,6 +305,7 @@ class _ProductPageState extends State<ProductPage> {
     return rp;
   }
   checkProduct(int id) async{
+    print(id);
     int check = await DatabaseHelper.instance.getProductById(id);
     if(check > 0){
       setState(() {

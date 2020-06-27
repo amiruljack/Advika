@@ -71,6 +71,21 @@ class DatabaseHelper{
     // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
     final result = await db.rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $id');
     final count = Sqflite.firstIntValue(result);
+    print(count);
+    if(count>0){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+    
+  }
+  Future<int> getProductByIdInMain(String id) async {
+    Database db = await instance.database;
+    // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
+    final result = await db.rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $id');
+    final count = Sqflite.firstIntValue(result);
+    print(count);
     if(count>0){
       return 1;
     }
@@ -88,20 +103,21 @@ class DatabaseHelper{
     Database db = await instance.database;
     return await db.delete("$_tableName",where:"id=?",whereArgs: [id]);
   }
-  // Future<int> addProduct(Map<String,dynamic> row ) async{
+  Future<int> addProduct(Map<String,dynamic> row ) async{
     
-  //   Database db = await instance.database;
-  //   var product = row['$productId'];
-  //   var count = await db.query(_tableName,where:"$productId=?",whereArgs:[product] );
-  //   print(count);
-  //   if(count == 0 ){
-  //     return await db.insert("$_tableName",row);
-  //   }
-  //   else{
-  //     return 0;
-  //   }
+    Database db = await instance.database;
+    var product = row['$productId'];
+    final result = await db.rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $product');
+    final count = Sqflite.firstIntValue(result);
+    print(count);
+    if(count == 0 ){
+      return await db.insert("$_tableName",row);
+    }
+    else{
+      return 0;
+    }
     
-  // }
+  }
 
 Future<int> getcount(id) async {
       Database db = await instance.database;
@@ -109,4 +125,5 @@ Future<int> getcount(id) async {
           await db.rawQuery("SELECT COUNT(*) FROM $_tableName WHERE $productId=$id"));
       return count;
       }
+      
 }

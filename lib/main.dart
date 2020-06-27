@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 2;
   PageController _pageController;
   var isLogin;
- 
+ int i = 0;
   @override
   void initState() {
     super.initState();
@@ -89,6 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
         body: FutureBuilder(
                future: getProducts(),
                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                 int ind = 0;
+                
+                 
                  if (snapshot.hasData) {
                    List<GetAllProduct> data = snapshot.data;
                    return GridView.count(
@@ -126,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                child: Text("\u20B9"+product.productprice+"/-"),
                              ),
                              Center(
-                               child: RaisedButton(
+                               child: ind==0 ? RaisedButton(
                                  color: Colors.green,
                                  child: Text(
                                    "Add to Cart",
@@ -135,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                    )
                                  ),
                                  onPressed: ()async{
-                                   int i = await DatabaseHelper.instance.insert({
+                                   int i = await DatabaseHelper.instance.addProduct({
                                     DatabaseHelper.productId:product.productid,
                                     DatabaseHelper.productName:product.productname,
                                     DatabaseHelper.productImage:product.productimage,
@@ -146,10 +149,21 @@ class _MyHomePageState extends State<MyHomePage> {
                                     DatabaseHelper.unitName:product.unitname,
                                    });
                                    setState(() {
-                                     var plug = false;
+                                     if(i>)
+                                     ind = ;
+                                    
                                    });
 
                                  },
+                               ):RaisedButton(
+                                 color: Colors.grey,
+                                 child: Text(
+                                   "Add to Cart",
+                                   style:TextStyle(
+                                     color: Colors.white,
+                                   )
+                                 ),
+                                 onPressed: null,
                                ),
                              ),
                            ],
@@ -261,6 +275,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     return rp;
+  }
+   checkProduct(String id) async{
+    int check = await DatabaseHelper.instance.getProductByIdInMain(id);
+    if(check > 0){
+      return 1;
+    }
+    else{
+      return 0;
+    }
   }
     fetch()async {
       const oneSec = const Duration(seconds:5);
