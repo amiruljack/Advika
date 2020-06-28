@@ -56,114 +56,151 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
         ),
-        body: FutureBuilder(
-            future: DatabaseHelper.instance.getProduct(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              int ind = 0;
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              RaisedButton(
+                onPressed: null,
+                child: Text("Proceed to check out"),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: FutureBuilder(
+                    future: DatabaseHelper.instance.getProduct(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      int ind = 0;
 
-              if (snapshot.hasData) {
-                List<Product> data = snapshot.data;
-                return ListView(
-                  children: data
-                      .map(
-                        (product) => GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductPage(product.productId)));
-                          },
-                          child: Card(
-                            child: Row(
-                              children: <Widget>[
-                                Image.network("$image/${product.productImage}",
-                                    fit: BoxFit.cover,
-                                    width:
-                                        MediaQuery.of(context).size.width / 3,
-                                    height:
-                                        MediaQuery.of(context).size.height / 5),
-                                Column(
-                                  children: <Widget>[
-                                    Center(
-                                      child: Text(
-                                        "Prroduct Name:" + product.productName,
-                                        style: TextStyle(
-                                            fontSize: MediaQuery.of(context)
+                      if (snapshot.hasData) {
+                        List<Product> data = snapshot.data;
+                        return ListView(
+                          children: data
+                              .map(
+                                (product) => GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProductPage(
+                                                product.productId)));
+                                  },
+                                  child: Card(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Image.network(
+                                            "$image/${product.productImage}",
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                25),
-                                      ),
-                                    ),
-                                    // Center(
-                                    //   child:
-                                    //       //Text("Order Qty:" + product.orderQty),
-                                    // ),
-                                    Center(
-                                      child: Text("\u20B9" +
-                                          product.productPrice +
-                                          "/" +
-                                          product.unitName),
-                                    ),
-                                    Center(
-                                      child: ind == 0
-                                          ? RaisedButton(
-                                              color: Colors.green,
-                                              child: Text("Add to Cart",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  )),
-                                              onPressed: () async {
-                                                int i = await DatabaseHelper
-                                                    .instance
-                                                    .addProduct({
-                                                  DatabaseHelper.productId:
-                                                      product.productId,
-                                                  DatabaseHelper.productName:
-                                                      product.productName,
-                                                  DatabaseHelper.productImage:
-                                                      product.productImage,
-                                                  DatabaseHelper.productPrice:
-                                                      product.productPrice,
-                                                  DatabaseHelper.minimumQty:
-                                                      product.minimumQty,
-                                                  DatabaseHelper.minimumUnit:
-                                                      product.minimumUnit,
-                                                  DatabaseHelper.categoryName:
-                                                      product.categoryName,
-                                                  DatabaseHelper.unitName:
-                                                      product.unitName,
-                                                });
-                                                setState(() {
-                                                  //  if(i>)
-                                                  //  ind = ;
-                                                });
-                                              },
-                                            )
-                                          : RaisedButton(
-                                              color: Colors.grey,
-                                              child: Text("Add to Cart",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  )),
-                                              onPressed: null,
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                5),
+                                        Column(
+                                          children: <Widget>[
+                                            Center(
+                                              child: Text(
+                                                "Prroduct Name:" +
+                                                    product.productName,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            25),
+                                              ),
                                             ),
+                                            // Center(
+                                            //   child:
+                                            //       //Text("Order Qty:" + product.orderQty),
+                                            // ),
+                                            Center(
+                                              child: Text("\u20B9" +
+                                                  product.productPrice +
+                                                  "/" +
+                                                  product.unitName),
+                                            ),
+                                            Center(
+                                              child: ind == 0
+                                                  ? RaisedButton(
+                                                      color: Colors.green,
+                                                      child: Text(
+                                                          "Select Quantity",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          )),
+                                                      onPressed: () async {
+                                                        int i =
+                                                            await DatabaseHelper
+                                                                .instance
+                                                                .addProduct({
+                                                          DatabaseHelper
+                                                                  .productId:
+                                                              product.productId,
+                                                          DatabaseHelper
+                                                                  .productName:
+                                                              product
+                                                                  .productName,
+                                                          DatabaseHelper
+                                                                  .productImage:
+                                                              product
+                                                                  .productImage,
+                                                          DatabaseHelper
+                                                                  .productPrice:
+                                                              product
+                                                                  .productPrice,
+                                                          DatabaseHelper
+                                                                  .minimumQty:
+                                                              product
+                                                                  .minimumQty,
+                                                          DatabaseHelper
+                                                                  .minimumUnit:
+                                                              product
+                                                                  .minimumUnit,
+                                                          DatabaseHelper
+                                                                  .categoryName:
+                                                              product
+                                                                  .categoryName,
+                                                          DatabaseHelper
+                                                                  .unitName:
+                                                              product.unitName,
+                                                        });
+                                                        setState(() {
+                                                          //  if(i>)
+                                                          //  ind = ;
+                                                        });
+                                                      },
+                                                    )
+                                                  : RaisedButton(
+                                                      color: Colors.grey,
+                                                      child: Text(
+                                                          "Select Quantity",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          )),
+                                                      onPressed: null,
+                                                    ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
                                     ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+              ),
+            ],
+          ),
+        ),
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _currentIndex,
           showElevation: true,

@@ -101,21 +101,21 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Stack(
           children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-              ),
-              items: imgList
-                  .map((item) => Container(
-                        child: Center(
-                            child: Image.network(item,
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height / 5)),
-                      ))
-                  .toList(),
-            ),
+            // CarouselSlider(
+            //   options: CarouselOptions(
+            //     autoPlay: true,
+            //   ),
+            //   items: imgList
+            //       .map((item) => Container(
+            //             child: Center(
+            //                 child: Image.network(item,
+            //                     fit: BoxFit.cover,
+            //                     width: MediaQuery.of(context).size.width,
+            //                     height:
+            //                         MediaQuery.of(context).size.height / 5)),
+            //           ))
+            //       .toList(),
+            // ),
             FutureBuilder(
                 future: getProducts(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -203,10 +203,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   DatabaseHelper.unitName:
                                                       product.unitname,
                                                 });
-                                                setState(() {
-                                                  //  if(i>)
-                                                  //  ind = ;
-                                                });
+                                                if (i == 0) {
+                                                  _showDilog("Thankyou",
+                                                      "Product Is Already Added in The Cart");
+                                                } else {
+                                                  _showDilog("Thankyou",
+                                                      "Product Is Added in The Cart");
+                                                }
                                               },
                                             )
                                           : RaisedButton(
@@ -247,12 +250,17 @@ class _MyHomePageState extends State<MyHomePage> {
               print("search.dart");
             }
             if (_currentIndex == 2) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => MyApp()),
+                  ModalRoute.withName('/'));
             }
             if (_currentIndex == 3) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => CartPage()));
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => CartPage()),
+                  ModalRoute.withName('/'));
             }
             if (_currentIndex == 4) {
               if (isLogin != 1) {
@@ -361,6 +369,30 @@ class _MyHomePageState extends State<MyHomePage> {
     pref.setBool("isLogin", false);
     setState(() {
       isLogin = 0;
+    });
+  }
+
+  void _showDilog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(text),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
+  }
+
+  setBottom() {
+    setState(() {
+      _currentIndex = 2;
     });
   }
 }
