@@ -175,39 +175,60 @@ class _ProductPageState extends State<ProductPage> {
                                                   horizontal: 32.0,
                                                 ),
                                                 onPressed: () async {
-                                                  int i = await DatabaseHelper
-                                                      .instance
-                                                      .insert({
-                                                    DatabaseHelper.productId:
-                                                        snapshot.data[index]
-                                                            .productid,
-                                                    DatabaseHelper.productName:
-                                                        snapshot.data[index]
-                                                            .productname,
-                                                    DatabaseHelper.productImage:
-                                                        snapshot.data[index]
-                                                            .productimage,
-                                                    DatabaseHelper.productPrice:
-                                                        snapshot.data[index]
-                                                            .productprice,
-                                                    DatabaseHelper.minimumQty:
-                                                        snapshot.data[index]
-                                                            .productminimum,
-                                                    DatabaseHelper.minimumUnit:
-                                                        snapshot.data[index]
-                                                            .productminimumunit,
-                                                    DatabaseHelper.categoryName:
-                                                        snapshot.data[index]
-                                                            .categoryname,
-                                                    DatabaseHelper.unitName:
-                                                        snapshot.data[index]
-                                                            .unitname,
-                                                  });
-                                                  setState(() {
-                                                    ind = 1;
-                                                  });
-                                                  _showDilog("Success",
-                                                      "product Successfully Added to your Cart");
+                                                  if (qtyController
+                                                          .text.length ==
+                                                      0) {
+                                                    _showDilog("Warning",
+                                                        "Please Enter Product Qty");
+                                                  } else if (int.parse(
+                                                          qtyController.text) <
+                                                      int.parse(snapshot
+                                                          .data[index]
+                                                          .productminimum)) {
+                                                    _showDilog("Warning",
+                                                        "Please Enter Qty Greater then minimum qty.");
+                                                  } else {
+                                                    int i = await DatabaseHelper
+                                                        .instance
+                                                        .insert({
+                                                      DatabaseHelper.productId:
+                                                          snapshot.data[index]
+                                                              .productid,
+                                                      DatabaseHelper
+                                                              .productName:
+                                                          snapshot.data[index]
+                                                              .productname,
+                                                      DatabaseHelper
+                                                              .productImage:
+                                                          snapshot.data[index]
+                                                              .productimage,
+                                                      DatabaseHelper
+                                                              .productPrice:
+                                                          snapshot.data[index]
+                                                              .productprice,
+                                                      DatabaseHelper.minimumQty:
+                                                          snapshot.data[index]
+                                                              .productminimum,
+                                                      DatabaseHelper
+                                                              .minimumUnit:
+                                                          snapshot.data[index]
+                                                              .productminimumunit,
+                                                      DatabaseHelper
+                                                              .categoryName:
+                                                          snapshot.data[index]
+                                                              .categoryname,
+                                                      DatabaseHelper.unitName:
+                                                          snapshot.data[index]
+                                                              .unitname,
+                                                      DatabaseHelper.orderQty:
+                                                          qtyController.text,
+                                                    });
+                                                    _showDilog("Success",
+                                                        "product Successfully Added to your Cart");
+                                                    setState(() {
+                                                      ind = 1;
+                                                    });
+                                                  }
                                                 },
                                               )
                                             : RaisedButton(

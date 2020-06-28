@@ -104,9 +104,15 @@ class DatabaseHelper {
         .update("$_tableName", row, where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     Database db = await instance.database;
     return await db.delete("$_tableName", where: "id=?", whereArgs: [id]);
+  }
+
+  Future<int> deleteFromCart(String id) async {
+    Database db = await instance.database;
+    return await db
+        .delete("$_tableName", where: "productid=?", whereArgs: [id]);
   }
 
   Future<int> addProduct(Map<String, dynamic> row) async {
@@ -140,7 +146,7 @@ class DatabaseHelper {
 
     var res = await db.query(_tableName);
     // print(res);r
-    print(res);
+
     try {
       List<Product> list = res.map((c) => Product.fromMap(c)).toList();
       return list;

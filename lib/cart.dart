@@ -63,141 +63,231 @@ class _CartPageState extends State<CartPage> {
                 onPressed: null,
                 child: Text("Proceed to check out"),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: FutureBuilder(
-                    future: DatabaseHelper.instance.getProduct(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      int ind = 0;
+              Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: FutureBuilder(
+                      future: DatabaseHelper.instance.getProduct(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        int ind = 0;
 
-                      if (snapshot.hasData) {
-                        List<Product> data = snapshot.data;
-                        return ListView(
-                          children: data
-                              .map(
-                                (product) => GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProductPage(
-                                                product.productId)));
-                                  },
-                                  child: Card(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Image.network(
-                                            "$image/${product.productImage}",
-                                            fit: BoxFit.cover,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                5),
-                                        Column(
-                                          children: <Widget>[
-                                            Center(
-                                              child: Text(
-                                                "Prroduct Name:" +
-                                                    product.productName,
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            25),
+                        if (snapshot.hasData) {
+                          List<Product> data = snapshot.data;
+                          return ListView(
+                            children: data
+                                .map(
+                                  (product) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProductPage(
+                                                  product.productId)));
+                                    },
+                                    child: Card(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Image.network(
+                                              "$image/${product.productImage}",
+                                              fit: BoxFit.cover,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  3,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  5),
+                                          Column(
+                                            children: <Widget>[
+                                              Center(
+                                                child: Text(
+                                                  "Product Name:" +
+                                                      product.productName,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              25),
+                                                ),
                                               ),
-                                            ),
-                                            // Center(
-                                            //   child:
-                                            //       //Text("Order Qty:" + product.orderQty),
-                                            // ),
-                                            Center(
-                                              child: Text("\u20B9" +
-                                                  product.productPrice +
-                                                  "/" +
-                                                  product.unitName),
-                                            ),
-                                            Center(
-                                              child: ind == 0
-                                                  ? RaisedButton(
-                                                      color: Colors.green,
-                                                      child: Text(
-                                                          "Select Quantity",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          )),
-                                                      onPressed: () async {
-                                                        int i =
-                                                            await DatabaseHelper
-                                                                .instance
-                                                                .addProduct({
-                                                          DatabaseHelper
-                                                                  .productId:
-                                                              product.productId,
-                                                          DatabaseHelper
-                                                                  .productName:
-                                                              product
-                                                                  .productName,
-                                                          DatabaseHelper
-                                                                  .productImage:
-                                                              product
-                                                                  .productImage,
-                                                          DatabaseHelper
-                                                                  .productPrice:
-                                                              product
-                                                                  .productPrice,
-                                                          DatabaseHelper
-                                                                  .minimumQty:
-                                                              product
-                                                                  .minimumQty,
-                                                          DatabaseHelper
-                                                                  .minimumUnit:
-                                                              product
-                                                                  .minimumUnit,
-                                                          DatabaseHelper
-                                                                  .categoryName:
-                                                              product
-                                                                  .categoryName,
-                                                          DatabaseHelper
-                                                                  .unitName:
-                                                              product.unitName,
-                                                        });
-                                                        setState(() {
-                                                          //  if(i>)
-                                                          //  ind = ;
-                                                        });
-                                                      },
-                                                    )
-                                                  : RaisedButton(
-                                                      color: Colors.grey,
-                                                      child: Text(
-                                                          "Select Quantity",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          )),
-                                                      onPressed: null,
+                                              Center(
+                                                child: Text(
+                                                    "Order Qty: ${product.orderQty}"),
+                                              ),
+                                              Center(
+                                                child: Text("\u20B9" +
+                                                    product.productPrice +
+                                                    "/" +
+                                                    product.unitName),
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Center(
+                                                    child: ind == 0
+                                                        ? Container(
+                                                            height: 40.0,
+                                                            child: Material(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                              shadowColor: Colors
+                                                                  .greenAccent,
+                                                              color:
+                                                                  Colors.green,
+                                                              elevation: 7.0,
+                                                              child: FlatButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  int i = await DatabaseHelper
+                                                                      .instance
+                                                                      .addProduct({
+                                                                    DatabaseHelper
+                                                                            .productId:
+                                                                        product
+                                                                            .productId,
+                                                                    DatabaseHelper
+                                                                            .productName:
+                                                                        product
+                                                                            .productName,
+                                                                    DatabaseHelper
+                                                                            .productImage:
+                                                                        product
+                                                                            .productImage,
+                                                                    DatabaseHelper
+                                                                            .productPrice:
+                                                                        product
+                                                                            .productPrice,
+                                                                    DatabaseHelper
+                                                                            .minimumQty:
+                                                                        product
+                                                                            .minimumQty,
+                                                                    DatabaseHelper
+                                                                            .minimumUnit:
+                                                                        product
+                                                                            .minimumUnit,
+                                                                    DatabaseHelper
+                                                                            .categoryName:
+                                                                        product
+                                                                            .categoryName,
+                                                                    DatabaseHelper
+                                                                            .unitName:
+                                                                        product
+                                                                            .unitName,
+                                                                  });
+                                                                  setState(() {
+                                                                    //  if(i>)
+                                                                    ind = 1;
+                                                                    print(ind);
+                                                                  });
+                                                                },
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'Select Qty.',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontFamily:
+                                                                            'Montserrat'),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            height: 40.0,
+                                                            child: Material(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                              shadowColor: Colors
+                                                                  .greenAccent,
+                                                              color:
+                                                                  Colors.grey,
+                                                              elevation: 7.0,
+                                                              child: FlatButton(
+                                                                onPressed: () {
+                                                                  // _login();
+                                                                },
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'select Qty.',
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontFamily:
+                                                                            'Montserrat'),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                  ),
+                                                  Container(
+                                                    height: 40.0,
+                                                    child: Material(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0),
+                                                      shadowColor:
+                                                          Colors.greenAccent,
+                                                      color: Colors.red,
+                                                      elevation: 7.0,
+                                                      child: FlatButton(
+                                                        onPressed: () async {
+                                                          int i =
+                                                              await DatabaseHelper
+                                                                  .instance
+                                                                  .delete(product
+                                                                      .productId);
+                                                          print(i);
+                                                        },
+                                                        child: Center(
+                                                          child: Text(
+                                                            'Remove',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Montserrat'),
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                              .toList(),
-                        );
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }),
+                                )
+                                .toList(),
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                ),
               ),
+              SizedBox(height: 100),
             ],
           ),
         ),
