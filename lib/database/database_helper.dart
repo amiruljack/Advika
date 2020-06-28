@@ -48,7 +48,7 @@ class DatabaseHelper {
             $categoryName TEXT NOT NULL,
             $minimumQty TEXT NOT NULL,
             $minimumUnit TEXT NOT NULL,
-            $orderQty TEXT NOT NULL
+            $orderQty TEXT NULL
         )
       ''');
   }

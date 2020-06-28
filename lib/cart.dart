@@ -95,10 +95,10 @@ class _CartPageState extends State<CartPage> {
                                                 25),
                                       ),
                                     ),
-                                    Center(
-                                      child:
-                                          Text("Order Qty:" + product.orderQty),
-                                    ),
+                                    // Center(
+                                    //   child:
+                                    //       //Text("Order Qty:" + product.orderQty),
+                                    // ),
                                     Center(
                                       child: Text("\u20B9" +
                                           product.productPrice +
