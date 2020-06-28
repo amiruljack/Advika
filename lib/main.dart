@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'database/database_helper.dart';
 import 'login.dart';
 import 'package/bottomNav.dart';
+import 'package/carousel_slider.dart';
 import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +40,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<String> imgList = [
+    'http://w-safe.ml/advika/banner1.png',
+    'http://w-safe.ml/advika/banner2.jpg',
+    'http://w-safe.ml/advika/banner3.png',
+    'http://w-safe.ml/advika/banner4.jpg',
+  ];
   int _currentIndex = 2;
   PageController _pageController;
   var isLogin;
@@ -92,114 +99,140 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: FutureBuilder(
-            future: getProducts(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              int ind = 0;
+        body: Stack(
+          children: <Widget>[
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+              ),
+              items: imgList
+                  .map((item) => Container(
+                        child: Center(
+                            child: Image.network(item,
+                                fit: BoxFit.cover,
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 5)),
+                      ))
+                  .toList(),
+            ),
+            FutureBuilder(
+                future: getProducts(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  int ind = 0;
 
-              if (snapshot.hasData) {
-                List<GetAllProduct> data = snapshot.data;
-                return GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: (MediaQuery.of(context).size.width /
-                      (MediaQuery.of(context).size.height / 1.3)),
-                  children: data
-                      .map(
-                        (product) => GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductPage(product.productid)));
-                          },
-                          child: Card(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Image.network("$image/${product.productimage}",
-                                    fit: BoxFit.cover,
-                                    width:
-                                        MediaQuery.of(context).size.width / 2 -
-                                            5,
-                                    height:
-                                        MediaQuery.of(context).size.height / 5),
-                                Center(
-                                  child: Text(
-                                    product.productname,
-                                    style: TextStyle(
-                                        fontSize:
+                  if (snapshot.hasData) {
+                    List<GetAllProduct> data = snapshot.data;
+                    return GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: (MediaQuery.of(context).size.width /
+                          (MediaQuery.of(context).size.height / 1.3)),
+                      children: data
+                          .map(
+                            (product) => GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductPage(product.productid)));
+                              },
+                              child: Card(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Image.network(
+                                        "$image/${product.productimage}",
+                                        fit: BoxFit.cover,
+                                        width:
                                             MediaQuery.of(context).size.width /
+                                                    2 -
+                                                5,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                5),
+                                    Center(
+                                      child: Text(
+                                        product.productname,
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
                                                 25),
-                                  ),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text("1" + product.unitname),
+                                    ),
+                                    Center(
+                                      child: Text("\u20B9" +
+                                          product.productprice +
+                                          "/-"),
+                                    ),
+                                    Center(
+                                      child: ind == 0
+                                          ? RaisedButton(
+                                              color: Colors.green,
+                                              child: Text("Add to Cart",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  )),
+                                              onPressed: () async {
+                                                int i = await DatabaseHelper
+                                                    .instance
+                                                    .addProduct({
+                                                  DatabaseHelper.productId:
+                                                      product.productid,
+                                                  DatabaseHelper.productName:
+                                                      product.productname,
+                                                  DatabaseHelper.productImage:
+                                                      product.productimage,
+                                                  DatabaseHelper.productPrice:
+                                                      product.productprice,
+                                                  DatabaseHelper.minimumQty:
+                                                      product.productminimum,
+                                                  DatabaseHelper.minimumUnit:
+                                                      product
+                                                          .productminimumunit,
+                                                  DatabaseHelper.categoryName:
+                                                      product.categoryname,
+                                                  DatabaseHelper.unitName:
+                                                      product.unitname,
+                                                });
+                                                setState(() {
+                                                  //  if(i>)
+                                                  //  ind = ;
+                                                });
+                                              },
+                                            )
+                                          : RaisedButton(
+                                              color: Colors.grey,
+                                              child: Text("Add to Cart",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  )),
+                                              onPressed: null,
+                                            ),
+                                    ),
+                                  ],
                                 ),
-                                Center(
-                                  child: Text("1" + product.unitname),
-                                ),
-                                Center(
-                                  child: Text(
-                                      "\u20B9" + product.productprice + "/-"),
-                                ),
-                                Center(
-                                  child: ind == 0
-                                      ? RaisedButton(
-                                          color: Colors.green,
-                                          child: Text("Add to Cart",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              )),
-                                          onPressed: () async {
-                                            int i = await DatabaseHelper
-                                                .instance
-                                                .addProduct({
-                                              DatabaseHelper.productId:
-                                                  product.productid,
-                                              DatabaseHelper.productName:
-                                                  product.productname,
-                                              DatabaseHelper.productImage:
-                                                  product.productimage,
-                                              DatabaseHelper.productPrice:
-                                                  product.productprice,
-                                              DatabaseHelper.minimumQty:
-                                                  product.productminimum,
-                                              DatabaseHelper.minimumUnit:
-                                                  product.productminimumunit,
-                                              DatabaseHelper.categoryName:
-                                                  product.categoryname,
-                                              DatabaseHelper.unitName:
-                                                  product.unitname,
-                                            });
-                                            setState(() {
-                                              //  if(i>)
-                                              //  ind = ;
-                                            });
-                                          },
-                                        )
-                                      : RaisedButton(
-                                          color: Colors.grey,
-                                          child: Text("Add to Cart",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              )),
-                                          onPressed: null,
-                                        ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                          )
+                          .toList(),
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
+          ],
+        ),
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _currentIndex,
           showElevation: true,
