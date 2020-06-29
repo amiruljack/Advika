@@ -182,6 +182,12 @@ class _CartPageState extends State<CartPage> {
                                                                     //  if(i>)
                                                                     ind = 1;
                                                                     print(ind);
+                                                                    _selectQty(
+                                                                        "Select Qty",
+                                                                        product
+                                                                            .unitName,
+                                                                        product
+                                                                            .minimumQty);
                                                                   });
                                                                 },
                                                                 child: Center(
@@ -215,6 +221,12 @@ class _CartPageState extends State<CartPage> {
                                                               child: FlatButton(
                                                                 onPressed: () {
                                                                   // _login();
+                                                                  _selectQty(
+                                                                      "Select Qty",
+                                                                      product
+                                                                          .unitName,
+                                                                      product
+                                                                          .minimumQty);
                                                                 },
                                                                 child: Center(
                                                                   child: Text(
@@ -383,5 +395,29 @@ class _CartPageState extends State<CartPage> {
     setState(() {
       isLogin = 0;
     });
+  }
+
+  void _selectQty(String title, String unit, String minimum) {
+    final qtyCtrl = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 100,
+            child: Card(
+              child: TextField(
+                controller: qtyCtrl,
+                decoration: InputDecoration(
+                    labelText: 'Enter Qty in $unit Minimum($minimum $unit) ',
+                    labelStyle: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green))),
+              ),
+            ),
+          );
+        });
   }
 }

@@ -143,7 +143,7 @@ class _ProductPageState extends State<ProductPage> {
                                         controller: qtyController,
                                         decoration: InputDecoration(
                                             labelText:
-                                                'Enter Qty in ${snapshot.data[index].unitname} Minimum(${snapshot.data[index].productminimum + " " + snapshot.data[index].productminimumunit}) ',
+                                                'Enter Qty in ${snapshot.data[index].unitname} Minimum(${snapshot.data[index].productminimum + " " + snapshot.data[index].unitname}) ',
                                             labelStyle: TextStyle(
                                                 fontFamily: 'Montserrat',
                                                 fontWeight: FontWeight.bold,
@@ -209,10 +209,6 @@ class _ProductPageState extends State<ProductPage> {
                                                       DatabaseHelper.minimumQty:
                                                           snapshot.data[index]
                                                               .productminimum,
-                                                      DatabaseHelper
-                                                              .minimumUnit:
-                                                          snapshot.data[index]
-                                                              .productminimumunit,
                                                       DatabaseHelper
                                                               .categoryName:
                                                           snapshot.data[index]
