@@ -100,7 +100,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
     final result = await db.rawQuery(
-        'SELECT COUNT(orderqty) FROM $_tableName WHERE orderqty = \'null\'');
+        'SELECT COUNT(orderqty) FROM $_tableName WHERE orderqty = "null"');
     print(result);
     final count = Sqflite.firstIntValue(result);
     print(count);
