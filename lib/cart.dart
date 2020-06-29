@@ -1,3 +1,5 @@
+import 'dart:wasm';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -115,11 +117,19 @@ class _CartPageState extends State<CartPage> {
                                               ),
                                               Center(
                                                 child: Text(
-                                                    "Order Qty: ${product.orderQty}"),
+                                                    "Order Qty: ${product.orderQty} ${product.unitName}"),
                                               ),
                                               Center(
                                                 child: Text("\u20B9" +
                                                     product.productPrice +
+                                                    "/" +
+                                                    product.unitName),
+                                              ),
+                                              Center(
+                                                child: Text("Payable:\u20B9" +
+                                                    countPrice(
+                                                        product.productPrice,
+                                                        product.orderQty) +
                                                     "/" +
                                                     product.unitName),
                                               ),
@@ -142,52 +152,17 @@ class _CartPageState extends State<CartPage> {
                                                               child: FlatButton(
                                                                 onPressed:
                                                                     () async {
-                                                                  int i = await DatabaseHelper
-                                                                      .instance
-                                                                      .addProduct({
-                                                                    DatabaseHelper
-                                                                            .productId:
-                                                                        product
-                                                                            .productId,
-                                                                    DatabaseHelper
-                                                                            .productName:
-                                                                        product
-                                                                            .productName,
-                                                                    DatabaseHelper
-                                                                            .productImage:
-                                                                        product
-                                                                            .productImage,
-                                                                    DatabaseHelper
-                                                                            .productPrice:
-                                                                        product
-                                                                            .productPrice,
-                                                                    DatabaseHelper
-                                                                            .minimumQty:
-                                                                        product
-                                                                            .minimumQty,
-                                                                    DatabaseHelper
-                                                                            .minimumUnit:
-                                                                        product
-                                                                            .minimumUnit,
-                                                                    DatabaseHelper
-                                                                            .categoryName:
-                                                                        product
-                                                                            .categoryName,
-                                                                    DatabaseHelper
-                                                                            .unitName:
-                                                                        product
-                                                                            .unitName,
-                                                                  });
                                                                   setState(() {
                                                                     //  if(i>)
                                                                     ind = 1;
-                                                                    print(ind);
                                                                     _selectQty(
                                                                         "Select Qty",
                                                                         product
                                                                             .unitName,
                                                                         product
-                                                                            .minimumQty);
+                                                                            .minimumQty,
+                                                                        product
+                                                                            .productId);
                                                                   });
                                                                 },
                                                                 child: Center(
@@ -221,12 +196,14 @@ class _CartPageState extends State<CartPage> {
                                                               child: FlatButton(
                                                                 onPressed: () {
                                                                   // _login();
-                                                                  _selectQty(
-                                                                      "Select Qty",
-                                                                      product
-                                                                          .unitName,
-                                                                      product
-                                                                          .minimumQty);
+                                                                  // _selectQty(
+                                                                  //     "Select Qty",
+                                                                  //     product
+                                                                  //         .unitName,
+                                                                  //     product
+                                                                  //         .minimumQty,
+                                                                  //     product
+                                                                  //         .productId);
                                                                 },
                                                                 child: Center(
                                                                   child: Text(
@@ -397,27 +374,143 @@ class _CartPageState extends State<CartPage> {
     });
   }
 
-  void _selectQty(String title, String unit, String minimum) {
+  void _selectQty(String title, String unit, String minimum, String productid) {
     final qtyCtrl = TextEditingController();
     showDialog(
         context: context,
         builder: (context) {
-          return Container(
-            height: 100,
-            child: Card(
-              child: TextField(
-                controller: qtyCtrl,
-                decoration: InputDecoration(
-                    labelText: 'Enter Qty in $unit Minimum($minimum $unit) ',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green))),
+          return AlertDialog(
+            title: Text("Enter Order Qty"),
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  //  Positioned(
+                  //  left:10,
+                  //top:50,
+                  //child: Text('data'),
+                  // child:
+                  TextField(
+                    autocorrect: true,
+                    controller: qtyCtrl,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                        labelText: 'Enter Qty in $unit Minimum($minimum $unit)',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green))),
+                    //obscureText: true,
+                  ),
+                  SizedBox(height: 10.0),
+
+                  SizedBox(height: 20.0),
+                  Container(
+                      height: 40.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.greenAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: FlatButton(
+                          onPressed: () async {
+                            // _editGroupMember(id);
+                            int i = await DatabaseHelper.instance.updateCart({
+                              DatabaseHelper.productId: productid,
+                              DatabaseHelper.orderQty: qtyCtrl.text,
+                            });
+
+                            _showDilog("Success", "Qty is Added succesfully");
+                            // Navigator.of(context).pop();
+                          },
+                          child: Center(
+                            child: Text(
+                              'Order Qty',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat'),
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(height: 20.0),
+                  Container(
+                    height: 35.0,
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                              width: 1.0),
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Center(
+                          child: Text('Go Back',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat')),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ),
+                ],
               ),
             ),
           );
         });
   }
+
+  void _showDilog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(text),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
+  }
 }
+
+countPrice(String p, String u) {
+  if (u != null) {
+    num price = num.parse(p);
+    num qty = num.parse(u);
+    num total = price * qty;
+    return total;
+  } else {
+    return "0.0";
+  }
+}
+//   Container(
+//   height: 100,
+//   child: Card(
+//     child: TextField(
+//       controller: qtyCtrl,
+//       decoration: InputDecoration(
+//           labelText: 'Enter Qty in $unit Minimum($minimum $unit) ',
+//           labelStyle: TextStyle(
+//               fontFamily: 'Montserrat',
+//               fontWeight: FontWeight.bold,
+//               color: Colors.grey),
+//           focusedBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(color: Colors.green))),
+//     ),
+//   ),
+// )

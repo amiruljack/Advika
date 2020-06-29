@@ -103,6 +103,13 @@ class DatabaseHelper {
         .update("$_tableName", row, where: 'id = ?', whereArgs: [id]);
   }
 
+  Future updateCart(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    String id = row['productid'];
+    return await db
+        .update("$_tableName", row, where: 'productid = ?', whereArgs: [id]);
+  }
+
   Future<int> delete(String id) async {
     Database db = await instance.database;
     return await db.delete("$_tableName", where: "id=?", whereArgs: [id]);
