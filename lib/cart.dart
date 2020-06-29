@@ -245,12 +245,17 @@ class _CartPageState extends State<CartPage> {
                                                       elevation: 7.0,
                                                       child: FlatButton(
                                                         onPressed: () async {
-                                                          int i =
-                                                              await DatabaseHelper
-                                                                  .instance
-                                                                  .delete(product
+                                                          int i = await DatabaseHelper
+                                                              .instance
+                                                              .deleteFromCart(
+                                                                  product
                                                                       .productId);
                                                           print(i);
+                                                          setState(() {
+                                                            DatabaseHelper
+                                                                .instance
+                                                                .getProduct();
+                                                          });
                                                         },
                                                         child: Center(
                                                           child: Text(

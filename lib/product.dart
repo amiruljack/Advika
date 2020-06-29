@@ -352,7 +352,6 @@ class _ProductPageState extends State<ProductPage> {
           res['product_name'],
           res['product_price'],
           res['product_minimum'],
-          res['minimum_name'],
           res['product_image'],
           res['category_name'],
           res['unit_name']);

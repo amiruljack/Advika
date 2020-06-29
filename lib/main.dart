@@ -195,9 +195,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                                       product.productprice,
                                                   DatabaseHelper.minimumQty:
                                                       product.productminimum,
-                                                  DatabaseHelper.minimumUnit:
-                                                      product
-                                                          .productminimumunit,
                                                   DatabaseHelper.categoryName:
                                                       product.categoryname,
                                                   DatabaseHelper.unitName:
@@ -325,7 +322,6 @@ class _MyHomePageState extends State<MyHomePage> {
           res['product_name'],
           res['product_price'],
           res['product_minimum'],
-          res['product_minimumunit'],
           res['product_image'],
           res['category_name'],
           res['unit_name']);

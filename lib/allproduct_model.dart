@@ -3,20 +3,18 @@ class GetAllProduct {
   final String productname;
   final String productprice;
   final String productminimum;
-  final String productminimumunit;
   final String productimage;
   final String categoryname;
   final String unitname;
   GetAllProduct(
-      this.productid, 
-      this.productname, 
-      this.productprice, 
-      this.productminimum, 
-      this.productminimumunit, 
-      this.productimage, 
-      this.categoryname, 
-      this.unitname,  
-   );
+    this.productid,
+    this.productname,
+    this.productprice,
+    this.productminimum,
+    this.productimage,
+    this.categoryname,
+    this.unitname,
+  );
   //  Map<String, dynamic> toMap() {
   //   var map = <String,dynamic>{
   //     'productid': productid,
@@ -30,7 +28,7 @@ class GetAllProduct {
   //   };
   //   return map;
   // }
-  // GetAllProduct.fromMap(Map<String, dynamic> map) {  
+  // GetAllProduct.fromMap(Map<String, dynamic> map) {
   //     productid = map['productid'];
   //     productname= map['productname'];
   //     productimage= map['productimage'];
@@ -38,7 +36,6 @@ class GetAllProduct {
   //     unitname= map['unitname'];
   //     categoryname= map['categoryname'];
   //     productminimum=map['productminimum'];
-  //     productminimumunit= map['productminimumunit'];   
+  //     productminimumunit= map['productminimumunit'];
   // }
 }
-  
