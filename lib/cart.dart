@@ -27,6 +27,23 @@ class _CartPageState extends State<CartPage> {
   var isLogin;
   int i = 0;
   @override
+  void initState() {
+    super.initState();
+
+    _isLogin();
+    // DatabaseHelper.instance.deleteall();
+
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
@@ -61,14 +78,40 @@ class _CartPageState extends State<CartPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              RaisedButton(
-                onPressed: null,
-                child: Text("Proceed to check out"),
+              SizedBox(height: 10),
+              Container(
+                height: 40.0,
+                child: Material(
+                  borderRadius: BorderRadius.circular(20.0),
+                  shadowColor: Colors.yellowAccent,
+                  color: Colors.yellow[800],
+                  elevation: 7.0,
+                  child: FlatButton(
+                    onPressed: () async {
+                      // int i = await DatabaseHelper.instance
+                      //     .deleteFromCart(product.productId);
+                      // print(i);
+                      // setState(() {
+                      //   DatabaseHelper.instance.getProduct();
+                      // });
+                      check();
+                    },
+                    child: Center(
+                      child: Text(
+                        'Checkout',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Montserrat'),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 18.0),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
+                  height: MediaQuery.of(context).size.height - 30,
                   child: FutureBuilder(
                       future: DatabaseHelper.instance.getProduct(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -130,8 +173,7 @@ class _CartPageState extends State<CartPage> {
                                                     countPrice(
                                                         product.productPrice,
                                                         product.orderQty) +
-                                                    "/" +
-                                                    product.unitName),
+                                                    "/-"),
                                               ),
                                               Row(
                                                 children: <Widget>[
@@ -420,7 +462,7 @@ class _CartPageState extends State<CartPage> {
                               DatabaseHelper.productId: productid,
                               DatabaseHelper.orderQty: qtyCtrl.text,
                             });
-
+                            print(i);
                             _showDilog("Success", "Qty is Added succesfully");
                             // Navigator.of(context).pop();
                           },
@@ -486,18 +528,30 @@ class _CartPageState extends State<CartPage> {
           );
         });
   }
-}
 
-countPrice(String p, String u) {
-  if (u != null) {
-    num price = num.parse(p);
-    num qty = num.parse(u);
-    num total = price * qty;
-    return total;
-  } else {
-    return "0.0";
+  countPrice(String p, String u) {
+    if (u != null) {
+      var price = double.parse(p);
+      assert(price is double);
+      var qty = double.parse(u);
+      assert(qty is double);
+      double total = (price * qty);
+      return total.toString();
+    } else {
+      return "0.0";
+    }
+  }
+
+  check() async {
+    int i = await DatabaseHelper.instance.checkProduct();
+    if (i == 1) {
+      _showDilog("Warning", "Please select order Qty for all products");
+    } else {
+      _showDilog("orderplaced", "success");
+    }
   }
 }
+
 //   Container(
 //   height: 100,
 //   child: Card(

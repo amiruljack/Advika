@@ -96,6 +96,21 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> checkProduct() async {
+    Database db = await instance.database;
+    // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
+    final result = await db.rawQuery(
+        'SELECT COUNT(orderqty) FROM $_tableName WHERE orderqty = \'null\'');
+    print(result);
+    final count = Sqflite.firstIntValue(result);
+    print(count);
+    if (count > 0) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
   Future update(Map<String, dynamic> row) async {
     Database db = await instance.database;
     int id = row['id'];
@@ -151,7 +166,7 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     var res = await db.query(_tableName);
-    // print(res);r
+    print(res);
 
     try {
       List<Product> list = res.map((c) => Product.fromMap(c)).toList();
