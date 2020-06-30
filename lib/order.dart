@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'cart.dart';
+import 'cart_model.dart';
+import 'database/database_helper.dart';
+import 'login.dart';
+import 'main.dart';
 import 'package/bottomNav.dart';
+import 'path.dart';
+import 'product.dart';
+import 'profile.dart';
 
 class OrderPage extends StatefulWidget {
   OrderPage({Key key}) : super(key: key);
@@ -10,7 +19,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
-   int _currentIndex = 3;
+  int _currentIndex = 3;
   PageController _pageController;
   var isLogin;
   int i = 0;
@@ -30,9 +39,11 @@ class _OrderPageState extends State<OrderPage> {
 
     super.dispose();
   }
+
   @override
-  Widget build(BuildContext context) {}
-  return MaterialApp(
+  Widget build(BuildContext context) {
+    const PrimaryColor = const Color(0xFF34a24b);
+    return MaterialApp(
       theme: ThemeData(
         primaryColor: PrimaryColor,
       ),
@@ -80,7 +91,7 @@ class _OrderPageState extends State<OrderPage> {
                       // setState(() {
                       //   DatabaseHelper.instance.getProduct();
                       // });
-                      check();
+                      // check();
                     },
                     child: Center(
                       child: Text(
@@ -155,12 +166,13 @@ class _OrderPageState extends State<OrderPage> {
                                                     product.unitName),
                                               ),
                                               Center(
-                                                child: Text("Payable:\u20B9" +
-                                                    countPrice(
-                                                        product.productPrice,
-                                                        product.orderQty) +
-                                                    "/-"),
-                                              ),
+                                                  child: Text("Payable:\u20B9")
+                                                  // countPrice(
+                                                  //     product.productPrice,
+                                                  //     product.orderQty) +
+                                                  // "/-"),
+
+                                                  ),
                                               Row(
                                                 children: <Widget>[
                                                   Center(
@@ -180,18 +192,18 @@ class _OrderPageState extends State<OrderPage> {
                                                               child: FlatButton(
                                                                 onPressed:
                                                                     () async {
-                                                                  setState(() {
-                                                                    //  if(i>)
-                                                                    ind = 1;
-                                                                    _selectQty(
-                                                                        "Select Qty",
-                                                                        product
-                                                                            .unitName,
-                                                                        product
-                                                                            .minimumQty,
-                                                                        product
-                                                                            .productId);
-                                                                  });
+                                                                  // setState(() {
+                                                                  //   //  if(i>)
+                                                                  //   ind = 1;
+                                                                  //   _selectQty(
+                                                                  //       "Select Qty",
+                                                                  //       product
+                                                                  //           .unitName,
+                                                                  //       product
+                                                                  //           .minimumQty,
+                                                                  //       product
+                                                                  //           .productId);
+                                                                  // });
                                                                 },
                                                                 child: Center(
                                                                   child: Text(
@@ -381,4 +393,30 @@ class _OrderPageState extends State<OrderPage> {
         ),
       ),
     );
+    void _showDilog(String title, String text) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(title),
+              content: Text(text),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("ok"))
+              ],
+            );
+          });
+    }
+  }
+
+  logout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isLogin", false);
+    setState(() {
+      isLogin = 0;
+    });
+  }
 }
