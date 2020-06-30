@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class OrderPage extends StatefulWidget {
   OrderPage({Key key}) : super(key: key);
 
@@ -8,9 +9,5 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-       child: Text("Order Page"),
-    );
-  }
+  Widget build(BuildContext context) {}
 }
