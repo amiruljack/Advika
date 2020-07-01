@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,6 +58,7 @@ class _ProductPageState extends State<ProductPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: DrawerPage(),
         appBar: AppBar(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,

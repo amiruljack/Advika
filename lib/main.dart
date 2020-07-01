@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:Advika/cart.dart';
+import 'package:Advika/drawer.dart';
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,23 +76,16 @@ class _MyHomePageState extends State<MyHomePage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
-        drawer: Drawer(),
+        drawer: DrawerPage(),
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
-            if (isLogin != 1)
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage()));
-                  },
-                  icon: Icon(Icons.supervised_user_circle))
-            else
-              IconButton(
-                  onPressed: () {
-                    logout();
-                  },
-                  icon: Icon(Icons.power_settings_new)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
           ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,

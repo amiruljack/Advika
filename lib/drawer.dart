@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:Advika/login.dart';
+import 'package:Advika/main.dart';
+import 'package:Advika/profile.dart';
 import 'package:flutter/material.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:simple_permissions/simple_permissions.dart';
@@ -27,23 +30,13 @@ class _DrawerPageState extends State<DrawerPage> {
   //requestPermission() async{
   // await SimplePermissions.requestPermission(Permission.Camera);
   //}
-
-  var userid;
-  var email = '';
-  var number = '';
-  var name = '';
-  var status = '';
+  var isLogin;
   bool log = false;
-  final dataCtrl = TextEditingController();
-  final emailController = TextEditingController();
-  final nameController = TextEditingController();
-  final numberController = TextEditingController();
-  final otpController = TextEditingController();
   // final GoogleSignIn _googleSignIn = new GoogleSignIn();
   @override
   void initState() {
     super.initState();
-    getData();
+
     checkLogin();
   }
 
@@ -51,74 +44,50 @@ class _DrawerPageState extends State<DrawerPage> {
 
   @override
   Widget build(BuildContext context) {
+    const PrimaryColor = const Color(0xFF34a24b);
     return new Drawer(
       child: new ListView(
         children: <Widget>[
           Container(
-            height: 250,
-            child: new DrawerHeader(
-              child: new Container(
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(
-                      'assets/logo.jpeg',
+            color: PrimaryColor,
+            height: MediaQuery.of(context).size.height / 4,
+            child: new Container(
+              color: PrimaryColor,
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(18.0),
+                    child: Image.asset(
+                      'assets/logo.png',
                       width: MediaQuery.of(context).size.width / 5,
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'NAME:-$name   ',
-                          style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 18.0),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'EMAIL:-$email ',
-                          style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 12.0),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
+                  ),
+                ],
               ),
             ),
           ),
           new ListTile(
-            leading: new Icon(Icons.directions_car),
-            title: new Text("ALL CARS"),
+            leading: new Icon(Icons.stars),
+            title: new Text("ALL PRODUCTS"),
             onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => AllCarPage(),));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(),
+                  ));
             },
           ),
 
           new ListTile(
-            leading: new Icon(Icons.directions_car),
-            title: new Text("BOOK CARS"),
+            leading: new Icon(Icons.category),
+            title: new Text("CATEGORIES"),
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => TwoWayBookPage(),));
             },
           ),
           new ListTile(
-            leading: new Icon(Icons.history),
+            leading: new Icon(Icons.query_builder),
             title: new Text("ORDERS"),
             onTap: () {
               // Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(),));
@@ -135,24 +104,35 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: new Icon(Icons.mode_edit),
             title: new Text("EDIT PROFILE"),
             onTap: () {
-              if (log) {
-                _showDilog(
-                    "Warning", "Edit Profile is Not Working with Google user");
-              } else {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage(),));
-              }
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
+                  ));
             },
           ),
           // new Divider(),
-
+          if (isLogin != 1)
+            new ListTile(
+              leading: new Icon(Icons.close),
+              title: new Text("LOGIN"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+              },
+            )
+          else
+            new ListTile(
+              leading: new Icon(Icons.close),
+              title: new Text("LOGOUT"),
+              onTap: () {
+                _logout();
+              },
+            ),
           //  new Divider(),
-          new ListTile(
-            leading: new Icon(Icons.close),
-            title: new Text("LOGOUT"),
-            onTap: () {
-              _logout();
-            },
-          ),
         ],
       ),
     );
@@ -170,35 +150,6 @@ class _DrawerPageState extends State<DrawerPage> {
     }
     // Navigator.push(
     // context, MaterialPageRoute(builder: (context) => MyHomePage()));
-  }
-
-  void getData() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getBool("name1")) {
-      setState(() {
-        name = pref.getString("name");
-        email = pref.getString("email");
-      });
-    } else {
-      email = pref.getString("email");
-      var response = await http.post("$api/userdata.php", body: {
-        "email": email,
-      });
-      print(response.body);
-      var dataUser = json.decode(response.body);
-      if (dataUser.length == 0) {
-      } else {
-        if (name == '') {
-          setState(() {
-            name = dataUser[0]['name'];
-            email = dataUser[0]['email'];
-          });
-        }
-
-        //name=dataUser[0]['name'];
-
-      }
-    }
   }
 
   void _showDilog(String title, String text) {
