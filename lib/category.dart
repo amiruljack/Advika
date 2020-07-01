@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Advika/category_model.dart';
 import 'package:flutter/material.dart';
 import 'cart.dart';
+import 'category_product.dart';
 import 'drawer.dart';
 import 'path.dart';
 import 'package:http/http.dart' as http;
@@ -58,11 +59,11 @@ class _CategoryPageState extends State<CategoryPage> {
                       .map(
                         (product) => GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => ProductPage(
-                            //             product.productId)));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CategoryProductPage(
+                                        product.categoryid)));
                           },
                           child: Card(
                             child: Center(

@@ -2,6 +2,7 @@ import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cart_model.dart';
+import 'checkout.dart';
 import 'database/database_helper.dart';
 import 'login.dart';
 import 'main.dart';
@@ -467,7 +468,8 @@ class _CartPageState extends State<CartPage> {
     if (i == 1) {
       _showDilog("Warning", "Please select order Qty for all products");
     } else {
-      _showDilog("orderplaced", "success");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CheckoutPage()));
     }
   }
 }

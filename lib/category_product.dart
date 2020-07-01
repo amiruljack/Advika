@@ -12,31 +12,17 @@ import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: MyHomePage(title: 'Advika'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
+class CategoryProductPage extends StatefulWidget {
+  CategoryProductPage(this.categoryid, {Key key, this.title}) : super(key: key);
+  final String categoryid;
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CategoryProductPageState createState() => _CategoryProductPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CategoryProductPageState extends State<CategoryProductPage> {
+  String categoryid;
   final List<String> imgList = [
     'http://w-safe.ml/advika/banner1.png',
     'http://w-safe.ml/advika/banner2.jpg',
@@ -60,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.categoryid);
     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
@@ -268,7 +255,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<GetAllProduct>> getProducts() async {
-    var response = await http.post("$api/allproduct");
+    var response = await http.post("$api/getProductsByCategory", body: {
+      'id': widget.categoryid,
+    });
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
     List<GetAllProduct> rp = [];
     //   const oneSec = const Duration(seconds:5);

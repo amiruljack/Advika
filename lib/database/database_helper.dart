@@ -98,18 +98,18 @@ class DatabaseHelper {
   Future<int> checkProduct() async {
     Database db = await instance.database;
     // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
-    final result = await db
-        .rawQuery('SELECT  COUNT(*) FROM $_tableName WHERE orderqty = NULL');
+    final result = await db.rawQuery(
+        'SELECT  COUNT(*) FROM $_tableName WHERE $orderQty != \"null\"');
     final result2 = await db.rawQuery('SELECT  COUNT(*) FROM $_tableName ');
     final count = Sqflite.firstIntValue(result);
     final count2 = Sqflite.firstIntValue(result2);
     var total = count2 - count;
 
-    print(total);
-    if (1 == 0) {
-      return 1;
-    } else {
+    // print(total);
+    if (total == 0) {
       return 0;
+    } else {
+      return 1;
     }
   }
 
