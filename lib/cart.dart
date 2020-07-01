@@ -1,3 +1,4 @@
+import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'cart_model.dart';
@@ -17,8 +18,6 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  int _currentIndex = 3;
-  PageController _pageController;
   var isLogin;
   int i = 0;
   @override
@@ -27,15 +26,6 @@ class _CartPageState extends State<CartPage> {
 
     _isLogin();
     // DatabaseHelper.instance.deleteall();
-
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -46,6 +36,7 @@ class _CartPageState extends State<CartPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: DrawerPage(),
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
@@ -315,72 +306,6 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavyBar(
-          selectedIndex: _currentIndex,
-          showElevation: true,
-          itemCornerRadius: 8,
-          curve: Curves.easeInBack,
-          onItemSelected: (index) => setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              print("order.dart");
-            }
-            if (_currentIndex == 1) {
-              print("search.dart");
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
-            }
-            if (_currentIndex == 3) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => CartPage()));
-            }
-            if (_currentIndex == 4) {
-              if (isLogin != 1) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              } else {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
-              }
-            }
-          }),
-          items: [
-            BottomNavyBarItem(
-              icon: Icon(Icons.assignment),
-              title: Text('Orders'),
-              activeColor: Colors.purpleAccent,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Search'),
-              activeColor: Colors.yellow,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.apps),
-              title: Text('Home'),
-              activeColor: Colors.red,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.shopping_cart),
-              title: Text(
-                'Cart',
-              ),
-              activeColor: Colors.pink,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Profile'),
-              activeColor: Colors.blue,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -445,13 +370,20 @@ class _CartPageState extends State<CartPage> {
                         elevation: 7.0,
                         child: FlatButton(
                           onPressed: () async {
-                            // _editGroupMember(id);
-                            int i = await DatabaseHelper.instance.updateCart({
-                              DatabaseHelper.productId: productid,
-                              DatabaseHelper.orderQty: qtyCtrl.text,
-                            });
-                            print(i);
-                            _showDilog("Success", "Qty is Added succesfully");
+                            print(num.parse(qtyCtrl.text));
+                            print(num.parse(minimum));
+                            if (num.parse(qtyCtrl.text) > num.parse(minimum)) {
+                              // _editGroupMember(id);
+                              int i = await DatabaseHelper.instance.updateCart({
+                                DatabaseHelper.productId: productid,
+                                DatabaseHelper.orderQty: qtyCtrl.text,
+                              });
+                              print(i);
+                              _showDilog("Success", "Qty is Added succesfully");
+                            } else {
+                              _showDilog("Warning ",
+                                  "Please Add Product Quantity Greater then Minimum Qty. ");
+                            }
                             // Navigator.of(context).pop();
                           },
                           child: Center(

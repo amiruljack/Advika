@@ -73,7 +73,7 @@ class DatabaseHelper {
     final result = await db
         .rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $id');
     final count = Sqflite.firstIntValue(result);
-    print(count);
+
     if (count > 0) {
       return 1;
     } else {
@@ -87,7 +87,7 @@ class DatabaseHelper {
     final result = await db
         .rawQuery('SELECT COUNT(*) FROM $_tableName WHERE $productId = $id');
     final count = Sqflite.firstIntValue(result);
-    print(count);
+
     if (count > 0) {
       return 1;
     } else {
@@ -98,12 +98,15 @@ class DatabaseHelper {
   Future<int> checkProduct() async {
     Database db = await instance.database;
     // return await db.query(_tableName, where: '$productId = ?', whereArgs: [id]);
-    final result = await db.rawQuery(
-        'SELECT COUNT(orderqty) FROM $_tableName WHERE orderqty = "null"');
-    print(result);
+    final result = await db
+        .rawQuery('SELECT  COUNT(*) FROM $_tableName WHERE orderqty = NULL');
+    final result2 = await db.rawQuery('SELECT  COUNT(*) FROM $_tableName ');
     final count = Sqflite.firstIntValue(result);
-    print(count);
-    if (count > 0) {
+    final count2 = Sqflite.firstIntValue(result2);
+    var total = count2 - count;
+
+    print(total);
+    if (1 == 0) {
       return 1;
     } else {
       return 0;
@@ -141,7 +144,7 @@ class DatabaseHelper {
     final result = await db.rawQuery(
         'SELECT COUNT(*) FROM $_tableName WHERE $productId = $product');
     final count = Sqflite.firstIntValue(result);
-    print(count);
+
     if (count == 0) {
       return await db.insert("$_tableName", row);
     } else {
@@ -165,7 +168,6 @@ class DatabaseHelper {
     Database db = await instance.database;
 
     var res = await db.query(_tableName);
-    print(res);
 
     try {
       List<Product> list = res.map((c) => Product.fromMap(c)).toList();

@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     .toList(),
               ),
               Container(
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height * 0.75,
                 child: FutureBuilder(
                     future: getProducts(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {

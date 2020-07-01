@@ -190,9 +190,9 @@ class _ProductPageState extends State<ProductPage> {
                                                       0) {
                                                     _showDilog("Warning",
                                                         "Please Enter Product Qty");
-                                                  } else if (int.parse(
+                                                  } else if (num.parse(
                                                           qtyController.text) <
-                                                      int.parse(snapshot
+                                                      num.parse(snapshot
                                                           .data[index]
                                                           .productminimum)) {
                                                     _showDilog("Warning",
@@ -272,72 +272,6 @@ class _ProductPageState extends State<ProductPage> {
                 );
               }
             }),
-        bottomNavigationBar: BottomNavyBar(
-          selectedIndex: _currentIndex,
-          showElevation: true,
-          itemCornerRadius: 8,
-          curve: Curves.easeInBack,
-          onItemSelected: (index) => setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              print("order.dart");
-            }
-            if (_currentIndex == 1) {
-              print("search.dart");
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
-            }
-            if (_currentIndex == 3) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => CartPage()));
-            }
-            if (_currentIndex == 4) {
-              if (isLogin != 1) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              } else {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
-              }
-            }
-          }),
-          items: [
-            BottomNavyBarItem(
-              icon: Icon(Icons.assignment),
-              title: Text('Orders'),
-              activeColor: Colors.purpleAccent,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Search'),
-              activeColor: Colors.yellow,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.apps),
-              title: Text('Home'),
-              activeColor: Colors.red,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.shopping_cart),
-              title: Text(
-                'Cart',
-              ),
-              activeColor: Colors.pink,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings'),
-              activeColor: Colors.blue,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }

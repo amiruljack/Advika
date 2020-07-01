@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Advika/category_model.dart';
 import 'package:flutter/material.dart';
 import 'cart.dart';
+import 'drawer.dart';
 import 'path.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,6 +30,7 @@ class _CategoryPageState extends State<CategoryPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: DrawerPage(),
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
@@ -46,75 +48,72 @@ class _CategoryPageState extends State<CategoryPage> {
             ],
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height - 30,
-                  child: FutureBuilder(
-                      future: getCategory(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          List<GetCategory> data = snapshot.data;
-                          return ListView(
-                            children: data
-                                .map(
-                                  (product) => GestureDetector(
-                                    onTap: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => ProductPage(
-                                      //             product.productId)));
-                                    },
-                                    child: Card(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Image.network(
-                                              "$categoryimage/${product.categoryimage}",
-                                              fit: BoxFit.cover,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  3,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  5),
-                                          Center(
-                                            child: Text(
-                                              product.categoryname,
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          20),
-                                            ),
-                                          )
-                                        ],
+        body: FutureBuilder(
+            future: getCategory(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                List<GetCategory> data = snapshot.data;
+                return ListView(
+                  children: data
+                      .map(
+                        (product) => GestureDetector(
+                          onTap: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => ProductPage(
+                            //             product.productId)));
+                          },
+                          child: Card(
+                            child: Center(
+                              child: Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(60.0),
+                                        child: Image.network(
+                                            "$categoryimage/${product.categoryimage}",
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                8),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                )
-                                .toList(),
-                          );
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      }),
-                ),
-              ),
-              SizedBox(height: 100),
-            ],
-          ),
-        ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(28.0),
+                                    child: Text(
+                                      product.categoryname,
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              20,
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
       ),
     );
   }
