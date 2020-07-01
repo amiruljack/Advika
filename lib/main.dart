@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: Drawer(),
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
