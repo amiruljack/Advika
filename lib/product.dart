@@ -10,7 +10,6 @@ import 'database/database_helper.dart';
 import 'login.dart';
 import 'main.dart';
 import 'package/bottomNav.dart';
-import 'package/carousel_slider.dart';
 import 'package:http/http.dart' as http;
 import 'path.dart';
 import 'profile.dart';
@@ -60,6 +59,15 @@ class _ProductPageState extends State<ProductPage> {
       home: Scaffold(
         drawer: DrawerPage(),
         appBar: AppBar(
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
+          ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -190,7 +198,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     _showDilog("Warning",
                                                         "Please Enter Qty Greater then minimum qty.");
                                                   } else {
-                                                    int i = await DatabaseHelper
+                                                    await DatabaseHelper
                                                         .instance
                                                         .insert({
                                                       DatabaseHelper.productId:
@@ -385,17 +393,6 @@ class _ProductPageState extends State<ProductPage> {
             ],
           );
         });
-  }
-
-  Future _isLogin() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    bool login = pref.getBool("isLogin") ?? false;
-
-    if (login) {
-      setState(() {
-        isLogin = 1;
-      });
-    }
   }
 
   logout() async {

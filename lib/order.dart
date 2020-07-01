@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'cart.dart';
 import 'cart_model.dart';
 import 'database/database_helper.dart';
@@ -51,19 +49,12 @@ class _OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
-            if (isLogin != 1)
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage()));
-                  },
-                  icon: Icon(Icons.supervised_user_circle))
-            else
-              IconButton(
-                  onPressed: () {
-                    logout();
-                  },
-                  icon: Icon(Icons.power_settings_new)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
           ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -393,30 +384,5 @@ class _OrderPageState extends State<OrderPage> {
         ),
       ),
     );
-    void _showDilog(String title, String text) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(title),
-              content: Text(text),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("ok"))
-              ],
-            );
-          });
-    }
-  }
-
-  logout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("isLogin", false);
-    setState(() {
-      isLogin = 0;
-    });
   }
 }

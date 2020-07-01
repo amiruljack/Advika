@@ -1,10 +1,5 @@
-import 'dart:wasm';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-
-import 'allproduct_model.dart';
 import 'cart_model.dart';
 import 'database/database_helper.dart';
 import 'login.dart';
@@ -54,19 +49,12 @@ class _CartPageState extends State<CartPage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
-            if (isLogin != 1)
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage()));
-                  },
-                  icon: Icon(Icons.supervised_user_circle))
-            else
-              IconButton(
-                  onPressed: () {
-                    logout();
-                  },
-                  icon: Icon(Icons.power_settings_new)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
           ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,

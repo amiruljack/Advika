@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:Advika/category.dart';
 import 'package:Advika/login.dart';
 import 'package:Advika/main.dart';
 import 'package:Advika/profile.dart';
@@ -6,10 +6,6 @@ import 'package:flutter/material.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:simple_permissions/simple_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-
-import 'path.dart';
-
 // import 'allcarpage.dart';
 // import 'editprofil.dart';
 // import 'history.dart';
@@ -36,8 +32,7 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     super.initState();
-
-    checkLogin();
+    _isLogin();
   }
 
   //_DrawerPageState(this.userid);
@@ -83,7 +78,11 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: new Icon(Icons.category),
             title: new Text("CATEGORIES"),
             onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => TwoWayBookPage(),));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CategoryPage(),
+                  ));
             },
           ),
           new ListTile(
@@ -129,7 +128,7 @@ class _DrawerPageState extends State<DrawerPage> {
               leading: new Icon(Icons.close),
               title: new Text("LOGOUT"),
               onTap: () {
-                _logout();
+                logout();
               },
             ),
           //  new Divider(),
@@ -138,44 +137,40 @@ class _DrawerPageState extends State<DrawerPage> {
     );
   }
 
-  void _logout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("isLogin", false);
-    if (pref.getBool("name1")) {
-      pref.setBool("name1", false);
-      pref.setBool("log", false);
-      pref.setBool("name", false);
-      pref.setBool("email", false);
-      // await _googleSignIn.signOut();
-    }
-    // Navigator.push(
-    // context, MaterialPageRoute(builder: (context) => MyHomePage()));
-  }
+  // void _showDilog(String title, String text) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(text),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text("ok"))
+  //           ],
+  //         );
+  //       });
+  // }
 
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
-  }
-
-  checkLogin() async {
+  Future _isLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getBool("name1")) {
+    bool login = pref.getBool("isLogin") ?? false;
+
+    if (login) {
       setState(() {
-        log = true;
+        isLogin = 1;
       });
     }
+  }
+
+  logout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isLogin", false);
+    setState(() {
+      isLogin = 0;
+    });
   }
 }

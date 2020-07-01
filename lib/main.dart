@@ -7,14 +7,10 @@ import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/database_helper.dart';
-import 'login.dart';
-import 'package/bottomNav.dart';
 import 'package/carousel_slider.dart';
 import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart' as http;
-
-import 'profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -47,8 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
     'http://w-safe.ml/advika/banner3.png',
     'http://w-safe.ml/advika/banner4.jpg',
   ];
-  int _currentIndex = 2;
-  PageController _pageController;
   var isLogin;
   int i = 0;
   @override
@@ -57,14 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
     fetch();
     _isLogin();
     // DatabaseHelper.instance.deleteall();
-
-    _pageController = PageController();
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
-
     super.dispose();
   }
 
@@ -94,210 +84,183 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: Stack(
-          children: <Widget>[
-            // CarouselSlider(
-            //   options: CarouselOptions(
-            //     autoPlay: true,
-            //   ),
-            //   items: imgList
-            //       .map((item) => Container(
-            //             child: Center(
-            //                 child: Image.network(item,
-            //                     fit: BoxFit.cover,
-            //                     width: MediaQuery.of(context).size.width,
-            //                     height:
-            //                         MediaQuery.of(context).size.height / 5)),
-            //           ))
-            //       .toList(),
-            // ),
-            FutureBuilder(
-                future: getProducts(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  int ind = 0;
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  enableInfiniteScroll: true,
+                ),
+                items: imgList
+                    .map((item) => Container(
+                          child: Center(
+                              child: Image.network(item,
+                                  fit: BoxFit.cover,
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height / 6)),
+                        ))
+                    .toList(),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height / 2,
+                child: FutureBuilder(
+                    future: getProducts(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      int ind = 0;
 
-                  if (snapshot.hasData) {
-                    List<GetAllProduct> data = snapshot.data;
-                    return GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: (MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height / 1.3)),
-                      children: data
-                          .map(
-                            (product) => GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProductPage(product.productid)));
-                              },
-                              child: Card(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Image.network(
-                                        "$image/${product.productimage}",
-                                        fit: BoxFit.cover,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                    2 -
-                                                5,
-                                        height:
-                                            MediaQuery.of(context).size.height /
-                                                5),
-                                    Center(
-                                      child: Text(
-                                        product.productname,
-                                        style: TextStyle(
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                25),
+                      if (snapshot.hasData) {
+                        List<GetAllProduct> data = snapshot.data;
+                        return CustomScrollView(
+                          primary: false,
+                          slivers: <Widget>[
+                            SliverPadding(
+                              padding: const EdgeInsets.all(20),
+                              sliver: SliverGrid.count(
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                crossAxisCount: 2,
+                                childAspectRatio:
+                                    MediaQuery.of(context).size.height /
+                                        (MediaQuery.of(context).size.width * 3),
+                                children: data
+                                    .map(
+                                      (product) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductPage(
+                                                          product.productid)));
+                                        },
+                                        child: Card(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Image.network(
+                                                  "$image/${product.productimage}",
+                                                  fit: BoxFit.cover,
+                                                  width: MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          2 -
+                                                      5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      5),
+                                              Center(
+                                                child: Text(
+                                                  product.productname,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              25),
+                                                ),
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                    "1" + product.unitname),
+                                              ),
+                                              Center(
+                                                child: Text("\u20B9" +
+                                                    product.productprice +
+                                                    "/-"),
+                                              ),
+                                              Center(
+                                                child: ind == 0
+                                                    ? RaisedButton(
+                                                        color: Colors.green,
+                                                        child: Text(
+                                                            "Add to Cart",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                        onPressed: () async {
+                                                          int i =
+                                                              await DatabaseHelper
+                                                                  .instance
+                                                                  .addProduct({
+                                                            DatabaseHelper
+                                                                    .productId:
+                                                                product
+                                                                    .productid,
+                                                            DatabaseHelper
+                                                                    .productName:
+                                                                product
+                                                                    .productname,
+                                                            DatabaseHelper
+                                                                    .productImage:
+                                                                product
+                                                                    .productimage,
+                                                            DatabaseHelper
+                                                                    .productPrice:
+                                                                product
+                                                                    .productprice,
+                                                            DatabaseHelper
+                                                                    .minimumQty:
+                                                                product
+                                                                    .productminimum,
+                                                            DatabaseHelper
+                                                                    .categoryName:
+                                                                product
+                                                                    .categoryname,
+                                                            DatabaseHelper
+                                                                    .unitName:
+                                                                product
+                                                                    .unitname,
+                                                          });
+                                                          if (i == 0) {
+                                                            _showDilog(
+                                                                "Thankyou",
+                                                                "Product Is Already Added in The Cart");
+                                                          } else {
+                                                            _showDilog(
+                                                                "Thankyou",
+                                                                "Product Is Added in The Cart");
+                                                          }
+                                                        },
+                                                      )
+                                                    : RaisedButton(
+                                                        color: Colors.grey,
+                                                        child: Text(
+                                                            "Add to Cart",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                        onPressed: null,
+                                                      ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    Center(
-                                      child: Text("1" + product.unitname),
-                                    ),
-                                    Center(
-                                      child: Text("\u20B9" +
-                                          product.productprice +
-                                          "/-"),
-                                    ),
-                                    Center(
-                                      child: ind == 0
-                                          ? RaisedButton(
-                                              color: Colors.green,
-                                              child: Text("Add to Cart",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  )),
-                                              onPressed: () async {
-                                                int i = await DatabaseHelper
-                                                    .instance
-                                                    .addProduct({
-                                                  DatabaseHelper.productId:
-                                                      product.productid,
-                                                  DatabaseHelper.productName:
-                                                      product.productname,
-                                                  DatabaseHelper.productImage:
-                                                      product.productimage,
-                                                  DatabaseHelper.productPrice:
-                                                      product.productprice,
-                                                  DatabaseHelper.minimumQty:
-                                                      product.productminimum,
-                                                  DatabaseHelper.categoryName:
-                                                      product.categoryname,
-                                                  DatabaseHelper.unitName:
-                                                      product.unitname,
-                                                });
-                                                if (i == 0) {
-                                                  _showDilog("Thankyou",
-                                                      "Product Is Already Added in The Cart");
-                                                } else {
-                                                  _showDilog("Thankyou",
-                                                      "Product Is Added in The Cart");
-                                                }
-                                              },
-                                            )
-                                          : RaisedButton(
-                                              color: Colors.grey,
-                                              child: Text("Add to Cart",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  )),
-                                              onPressed: null,
-                                            ),
-                                    ),
-                                  ],
-                                ),
+                                    )
+                                    .toList(),
                               ),
                             ),
-                          )
-                          .toList(),
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-          ],
-        ),
-        bottomNavigationBar: BottomNavyBar(
-          selectedIndex: _currentIndex,
-          showElevation: true,
-          itemCornerRadius: 8,
-          curve: Curves.easeInBack,
-          onItemSelected: (index) => setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              print("order.dart");
-            }
-            if (_currentIndex == 1) {
-              print("search.dart");
-            }
-            if (_currentIndex == 2) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (BuildContext context) => MyApp()),
-                  ModalRoute.withName('/'));
-            }
-            if (_currentIndex == 3) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => CartPage()),
-                  ModalRoute.withName('/'));
-            }
-            if (_currentIndex == 4) {
-              if (isLogin != 1) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              } else {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
-              }
-            }
-          }),
-          items: [
-            BottomNavyBarItem(
-              icon: Icon(Icons.assignment),
-              title: Text('Orders'),
-              activeColor: Colors.purpleAccent,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Search'),
-              activeColor: Colors.yellow,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.apps),
-              title: Text('Home'),
-              activeColor: Colors.red,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.shopping_cart),
-              title: Text(
-                'Cart',
+                          ],
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
               ),
-              activeColor: Colors.pink,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Profile'),
-              activeColor: Colors.blue,
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -336,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   fetch() async {
-    const oneSec = const Duration(seconds: 5);
+    const oneSec = const Duration(seconds: 500000);
     new Timer.periodic(
         oneSec,
         (Timer t) => setState(() {
@@ -379,11 +342,5 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           );
         });
-  }
-
-  setBottom() {
-    setState(() {
-      _currentIndex = 2;
-    });
   }
 }

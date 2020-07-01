@@ -1,0 +1,174 @@
+import 'dart:convert';
+
+import 'package:Advika/category_model.dart';
+import 'package:flutter/material.dart';
+import 'cart.dart';
+import 'path.dart';
+import 'package:http/http.dart' as http;
+
+class CategoryPage extends StatefulWidget {
+  CategoryPage({Key key}) : super(key: key);
+
+  @override
+  _CategoryPageState createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
+  var isLogin;
+  int i = 0;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const PrimaryColor = const Color(0xFF34a24b);
+    return MaterialApp(
+      theme: ThemeData(
+        primaryColor: PrimaryColor,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
+          ],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Advika"),
+            ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 18.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height - 30,
+                  child: FutureBuilder(
+                      future: getCategory(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          List<GetCategory> data = snapshot.data;
+                          return ListView(
+                            children: data
+                                .map(
+                                  (product) => GestureDetector(
+                                    onTap: () {
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) => ProductPage(
+                                      //             product.productId)));
+                                    },
+                                    child: Card(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Image.network(
+                                              "$categoryimage/${product.categoryimage}",
+                                              fit: BoxFit.cover,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  3,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  5),
+                                          Center(
+                                            child: Text(
+                                              product.categoryname,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          20),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                ),
+              ),
+              SizedBox(height: 100),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<List<GetCategory>> getCategory() async {
+    var response = await http.post("$api/get_category");
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+    List<GetCategory> rp = [];
+    //   const oneSec = const Duration(seconds:5);
+    // new Timer.periodic(oneSec, (Timer t) => setState((){
+
+    // }));
+    for (var res in dataUser) {
+      GetCategory data = GetCategory(
+          res['category_id'], res['category_name'], res['category_image']);
+      rp.add(data);
+    }
+
+    return rp;
+  }
+
+  // void _showDilog(String title, String text) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(text),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text("ok"))
+  //           ],
+  //         );
+  //       });
+  // }
+
+}
+
+//   Container(
+//   height: 100,
+//   child: Card(
+//     child: TextField(
+//       controller: qtyCtrl,
+//       decoration: InputDecoration(
+//           labelText: 'Enter Qty in $unit Minimum($minimum $unit) ',
+//           labelStyle: TextStyle(
+//               fontFamily: 'Montserrat',
+//               fontWeight: FontWeight.bold,
+//               color: Colors.grey),
+//           focusedBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(color: Colors.green))),
+//     ),
+//   ),
+// )

@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http ;
+import 'package:http/http.dart' as http;
 import 'main.dart';
 import 'package/bottomNav.dart';
 import 'path.dart';
+
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
 
@@ -15,23 +16,20 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int _currentIndex = 4;
-    PageController _pageController;
-    var isLogin;
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final numberController = TextEditingController();
-    final passwordController = TextEditingController();
-    @override
+  var isLogin;
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final numberController = TextEditingController();
+  final passwordController = TextEditingController();
+  @override
   void initState() {
     super.initState();
     getProfile();
-   _isLogin();
-    _pageController = PageController();
+    _isLogin();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    
     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
@@ -48,29 +46,30 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-              child: Stack(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Stack(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 28.0),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          width: 100,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 28.0),
+                            child: Image.asset(
+                              'assets/logo.png',
+                              width: 100,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-                 SizedBox(height: 20.0),
+                ),
+                SizedBox(height: 20.0),
                 Container(
-                    padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
+                    padding:
+                        EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
                     child: Column(
                       children: <Widget>[
                         TextField(
@@ -129,7 +128,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderSide: BorderSide(color: Colors.green))),
                         ),
                         SizedBox(height: 10.0),
-                        
                         SizedBox(height: 50.0),
                         Container(
                             height: 40.0,
@@ -179,8 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ],
-                    )
-                  ),
+                    )),
                 // SizedBox(height: 15.0),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +202,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 30.0),
               ]),
         ),
-        
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _currentIndex,
           showElevation: true,
@@ -213,19 +209,19 @@ class _ProfilePageState extends State<ProfilePage> {
           curve: Curves.easeInBack,
           onItemSelected: (index) => setState(() {
             _currentIndex = index;
-            if(_currentIndex==0){
+            if (_currentIndex == 0) {
               print("order.dart");
             }
-            if(_currentIndex==1){
+            if (_currentIndex == 1) {
               print("search.dart");
             }
-            if(_currentIndex==2){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>MyApp()));
+            if (_currentIndex == 2) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyApp()));
             }
-            if(_currentIndex==3){
+            if (_currentIndex == 3) {
               print("cart.dart");
             }
-            
           }),
           items: [
             BottomNavyBarItem(
@@ -265,19 +261,20 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-   getProfile() async {
-     SharedPreferences pref = await SharedPreferences.getInstance();
-     var $email = pref.getString("email");
-    var response = await http.post("$api/getProfile",body: {
-      "email":$email,
+
+  getProfile() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var $email = pref.getString("email");
+    var response = await http.post("$api/getProfile", body: {
+      "email": $email,
     });
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
-    nameController.text= dataUser[0]['customer_name'];
+    nameController.text = dataUser[0]['customer_name'];
     emailController.text = dataUser[0]['customer_email'];
-    numberController.text= dataUser[0]['customer_mobile'];
+    numberController.text = dataUser[0]['customer_mobile'];
   }
+
   void _updateprofile() async {
-    
     if (nameController.text.length == 0) {
       _showDilog('Error', "Enter valid Name");
       return null;
@@ -286,53 +283,51 @@ class _ProfilePageState extends State<ProfilePage> {
       _showDilog('Error', "Enter valid Email");
       return null;
     }
-   
+
     if (numberController.text.length == 0) {
       _showDilog('Error', "Enter valid Number");
       return null;
     }
-   
-    
-      SharedPreferences pref = await SharedPreferences.getInstance();
-     var $email = pref.getString("email");
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var $email = pref.getString("email");
 
     var response = await http.post("$api/updateprofile", body: {
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text,
       "mobile": numberController.text,
-      "oldemail":$email,
-     
+      "oldemail": $email,
     });
     var datauser = json.decode(response.body);
-    if(datauser["flag"]=="1"){
+    if (datauser["flag"] == "1") {
       setState(() {
         getProfile();
-        pref.setString("email",emailController.text);
+        pref.setString("email", emailController.text);
       });
       _showDilog("Success", "Succeefully updated your profile");
     }
-  
-    
   }
+
   Future _isLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-  bool login = pref.getBool("isLogin")??false;
-  
+    bool login = pref.getBool("isLogin") ?? false;
+
     if (login) {
-     setState(() {
-        isLogin = 1 ;
+      setState(() {
+        isLogin = 1;
       });
     }
   }
-  logout() async{
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("isLogin",false);
-    setState(() {
-        isLogin = 0 ;
-      });
 
+  logout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isLogin", false);
+    setState(() {
+      isLogin = 0;
+    });
   }
+
   void _showDilog(String title, String text) {
     showDialog(
         context: context,

@@ -1,4 +1,3 @@
-import 'package:Advika/allproduct_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
