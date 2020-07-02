@@ -176,4 +176,14 @@ class DatabaseHelper {
       print(e);
     }
   }
+
+  getProductTotal() async {
+    Database db = await instance.database;
+    var res = await db.query(_tableName);
+    try {
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
 }

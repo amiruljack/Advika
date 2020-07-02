@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'package:Advika/database/database_helper.dart';
+
 import 'cart.dart';
+import 'cart_model.dart';
 import 'drawer.dart';
 // import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'allproduct_model.dart';
 import 'path.dart';
+import 'product.dart';
 
 class CheckoutPage extends StatefulWidget {
   CheckoutPage({Key key}) : super(key: key);
@@ -44,506 +47,191 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
           ),
           drawer: DrawerPage(),
-          body: Container(
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
-              child: FutureBuilder(
-                future: _getOrder(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  return ListView.builder(
-                    itemCount: snapshot.hasData ? snapshot.data.length : 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (snapshot.hasData) {
-                        return Card(
-                          child: new Container(
-                            child: new Center(
-                              child: new Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  new Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: new Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Booking Email : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].bookingemail,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "User Email : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].useremail,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Pickup Date : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].pickupdate,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Pickup Time : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].pickuptime,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        snapshot.data[index].returndate != "0"
-                                            ? Row(
-                                                children: <Widget>[
-                                                  new Text(
-                                                    "Return Date : ",
-                                                    style: TextStyle(
-                                                        fontSize: 11.0,
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey),
-                                                  ),
-                                                  new Text(
-                                                    snapshot
-                                                        .data[index].returndate,
-                                                    // set some style to text
-                                                    style: TextStyle(
-                                                        fontSize: 11.0,
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey),
-                                                  ),
-                                                ],
-                                              )
-                                            : Row(
-                                                children: <Widget>[],
-                                              ),
-                                        snapshot.data[index].returndate != "0"
-                                            ? Row(
-                                                children: <Widget>[
-                                                  new Text(
-                                                    "Return Time : ",
-                                                    style: TextStyle(
-                                                        fontSize: 11.0,
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey),
-                                                  ),
-                                                  new Text(
-                                                    snapshot
-                                                        .data[index].returntime,
-                                                    // set some style to text
-                                                    style: TextStyle(
-                                                        fontSize: 11.0,
-                                                        fontFamily:
-                                                            'Montserrat',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.grey),
-                                                  ),
-                                                ],
-                                              )
-                                            : Row(
-                                                children: <Widget>[],
-                                              ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Pick up City : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].city,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Drop City : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].dropCity,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Car Type : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].cartype,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Travel : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].way,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Payable Amount : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              snapshot.data[index].payable,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            new Text(
-                                              "Status : ",
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            new Text(
-                                              // snapshot.data[index].payable,
-                                              snapshot
-                                                  .data[index].bookingstatus,
-                                              // set some style to text
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontFamily: 'Montserrat',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 20.0),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            if (snapshot.data[index]
-                                                    .bookingstatus ==
-                                                "Pending")
-                                              Container(
-                                                  height: 40.0,
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 18.0),
+                  child: Container(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      child: FutureBuilder(
+                          future: DatabaseHelper.instance.getProduct(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            int ind = 0;
+
+                            if (snapshot.hasData) {
+                              List<Product> data = snapshot.data;
+                              return ListView(
+                                children: data
+                                    .map(
+                                      (product) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductPage(
+                                                          product.productId)));
+                                        },
+                                        child: Card(
+                                          child: Row(
+                                            children: <Widget>[
+                                              Image.network(
+                                                  "$image/${product.productImage}",
+                                                  fit: BoxFit.cover,
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width /
                                                       3,
-                                                  child: Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    shadowColor:
-                                                        Colors.greenAccent,
-                                                    color: Colors.green,
-                                                    elevation: 7.0,
-                                                    child: FlatButton(
-                                                      onPressed: () {
-                                                        _confirmYourCar(snapshot
-                                                            .data[index].id);
-                                                      },
-                                                      child: Center(
-                                                        child: Text(
-                                                          'Book Your Car',
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white,
-                                                              fontSize: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  40,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontFamily:
-                                                                  'Montserrat'),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )),
-                                            if (snapshot.data[index]
-                                                    .bookingstatus ==
-                                                "Cancel by Driver")
-                                              Container(
-                                                  height: 40.0,
-                                                  width: MediaQuery.of(context)
+                                                  height: MediaQuery.of(context)
                                                           .size
-                                                          .width /
-                                                      4,
-                                                  child: Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    shadowColor:
-                                                        Colors.greenAccent,
-                                                    color: Colors.green,
-                                                    elevation: 7.0,
-                                                    child: FlatButton(
-                                                      onPressed: () {
-                                                        // _confirmYourCar();
-                                                      },
-                                                      child: Center(
-                                                        child: Text(
-                                                          'Cancel By Driver',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  40,
-                                                              fontFamily:
-                                                                  'Montserrat'),
+                                                          .height /
+                                                      5),
+                                              Column(
+                                                children: <Widget>[
+                                                  Center(
+                                                    child: Text(
+                                                      "Product Name:" +
+                                                          product.productName,
+                                                      style: TextStyle(
+                                                          fontSize: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              25),
+                                                    ),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                        "Order Qty: ${product.orderQty} ${product.unitName}"),
+                                                  ),
+                                                  Center(
+                                                    child: Text("\u20B9" +
+                                                        product.productPrice +
+                                                        "/" +
+                                                        product.unitName),
+                                                  ),
+                                                  Center(
+                                                    child: Text("Payable:\u20B9" +
+                                                        countPrice(
+                                                            product
+                                                                .productPrice,
+                                                            product.orderQty) +
+                                                        "/-"),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        height: 40.0,
+                                                        child: Material(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      20.0),
+                                                          shadowColor: Colors
+                                                              .greenAccent,
+                                                          color: Colors.red,
+                                                          elevation: 7.0,
+                                                          child: FlatButton(
+                                                            onPressed:
+                                                                () async {
+                                                              int i = await DatabaseHelper
+                                                                  .instance
+                                                                  .deleteFromCart(
+                                                                      product
+                                                                          .productId);
+                                                              print(i);
+                                                              setState(() {
+                                                                DatabaseHelper
+                                                                    .instance
+                                                                    .getProduct();
+                                                              });
+                                                            },
+                                                            child: Center(
+                                                              child: Text(
+                                                                'Remove',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        'Montserrat'),
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  )),
-                                            SizedBox(width: 5),
-                                            if (snapshot.data[index]
-                                                    .bookingstatus !=
-                                                "Cancel by user")
-                                              Container(
-                                                  height: 40.0,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3,
-                                                  child: Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    shadowColor:
-                                                        Colors.redAccent,
-                                                    color: Colors.red,
-                                                    elevation: 7.0,
-                                                    child: FlatButton(
-                                                      onPressed: () {
-                                                        _cancelYourCar(snapshot
-                                                            .data[index].id);
-                                                      },
-                                                      child: Center(
-                                                        child: Text(
-                                                          'Cancel Your Car',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontFamily:
-                                                                  'Montserrat',
-                                                              fontSize: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  40),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ))
-                                            else
-                                              Container(
-                                                  height: 40.0,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2,
-                                                  child: Material(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    shadowColor:
-                                                        Colors.redAccent,
-                                                    color: Colors.red,
-                                                    elevation: 7.0,
-                                                    child: FlatButton(
-                                                      onPressed: () {
-                                                        _deleteDilog(snapshot
-                                                            .data[index].id);
-                                                      },
-                                                      child: Center(
-                                                        child: Text(
-                                                          'Delete Booking',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontFamily:
-                                                                  'Montserrat',
-                                                              fontSize: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  40),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ))
-                                          ],
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(height: 20.0),
-                                      ],
+                                      ),
+                                    )
+                                    .toList(),
+                              );
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          }),
+                    ),
+                  ),
+                ),
+                Container(
+                  child: FutureBuilder(
+                      future: getTotal(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          List<GetTotal> data = snapshot.data;
+                          return Row(
+                            children: data
+                                .map(
+                                  (product) => Container(
+                                    height: 60,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Card(
+                                      color: PrimaryColor,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Text(
+                                            "No. of Products:" +
+                                                product.count.toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Total: \u20B9 " +
+                                                product.total.toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  // new Column(
-                                  //   children: <Widget>[
-                                  //     new IconButton(
-                                  //       icon: const Icon(
-                                  //           Icons.delete_forever,
-                                  //           color: const Color(0xFF167F67)),
-                                  //       onPressed: () {
-                                  //         _deleteDilog(
-                                  //             snapshot.data[index].id);
-                                  //       },
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Center(
-                          child: Text("Dont have any member"),
-                        );
-                      }
-                    },
-                  );
-                },
-              ),
+                                )
+                                .toList(),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
+                ),
+              ],
             ),
           ),
         ),
@@ -553,39 +241,70 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   refresh() async {
     setState(() {
-      _getOrder();
+      // _getOrder();
     });
   }
 
   //get all data
-  Future<List<Checkout>> _getOrder() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var response = await http.post("$api/order.php", body: {
-      "email": pref.getString("email"),
-    });
-    // print(response.body);
-    var dataUser = await json.decode(response.body);
-    List<Checkout> orders = [];
+  // Future<List<Checkout>> _getOrder() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   var response = await http.post("$api/order.php", body: {
+  //     "email": pref.getString("email"),
+  //   });
+  //   // print(response.body);
+  //   var dataUser = await json.decode(response.body);
+  //   List<Checkout> orders = [];
 
-    for (var row in dataUser) {
-      Checkout ord = Checkout(
-        row['id'],
-        row['useremail'],
-        row['bookingemail'],
-        row['pickupdate'],
-        row['pickuptime'],
-        row['returndate'],
-        row['returntime'],
-        row['city'],
-        row['dropCity'],
-        row['cartype'],
-        row['way'],
-        row['payable'],
-        row['bookingstatus'],
-      );
-      orders.add(ord);
+  //   for (var row in dataUser) {
+  //     Checkout ord = Checkout(
+  //       row['id'],
+  //       row['useremail'],
+  //       row['bookingemail'],
+  //       row['pickupdate'],
+  //       row['pickuptime'],
+  //       row['returndate'],
+  //       row['returntime'],
+  //       row['city'],
+  //       row['dropCity'],
+  //       row['cartype'],
+  //       row['way'],
+  //       row['payable'],
+  //       row['bookingstatus'],
+  //     );
+  //     orders.add(ord);
+  //   }
+  //   return orders;
+  // }
+
+  countPrice(String p, String u) {
+    if (u != null) {
+      var price = double.parse(p);
+      assert(price is double);
+      var qty = double.parse(u);
+      assert(qty is double);
+      double total = (price * qty);
+      return total.toString();
+    } else {
+      return "0.0";
     }
-    return orders;
+  }
+
+  Future<List<GetTotal>> getTotal() async {
+    List<GetTotal> total = [];
+    num totalamount = 0.0;
+    int count = 0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    count = j.length;
+    for (int k = 0; k < j.length; k++) {
+      totalamount = totalamount +
+          (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+    }
+    GetTotal get = GetTotal(
+      count,
+      totalamount,
+    );
+    total.add(get);
+    return total;
   }
 
   _confirmYourCar(String id) async {
@@ -598,7 +317,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     } else {
 //
       setState(() {
-        _getOrder();
+        // _getOrder();
       });
     }
   }
@@ -613,18 +332,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
     } else {
 //
       setState(() {
-        _getOrder();
+        // _getOrder();
       });
     }
   }
 
   _deleteDilog(String id) async {
-    // var result = await Connectivity().checkConnectivity();
-    // if (result == ConnectivityResult.none) {
-    //   _showDilog('No Internet', "You're not connected to a network");
-    //   return null;
-    // }
-
     var response = await http.post("$api/deleteorderhistory.php", body: {
       "id": id,
     });
@@ -634,9 +347,27 @@ class _CheckoutPageState extends State<CheckoutPage> {
     } else {
 //
       setState(() {
-        _getOrder();
+        // _getOrder();
       });
     }
+  }
+
+  void _showDilog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(text),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"))
+            ],
+          );
+        });
   }
 }
 

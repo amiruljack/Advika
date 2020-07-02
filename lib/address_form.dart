@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'cart.dart';
+import 'database/database_helper.dart';
+import 'drawer.dart';
 import 'login.dart';
 import 'main.dart';
 import 'path.dart';
@@ -24,7 +27,6 @@ class _AddressPageState extends State<AddressPage> {
   String password = '';
   String msg = '';
   String status = '';
-  String errMessage = 'Error Uploading Image';
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
@@ -33,15 +35,16 @@ class _AddressPageState extends State<AddressPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+          drawer: DrawerPage(),
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
               IconButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginPage()));
+                        MaterialPageRoute(builder: (context) => CartPage()));
                   },
-                  icon: Icon(Icons.supervised_user_circle))
+                  icon: Icon(Icons.add_shopping_cart))
             ],
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +155,7 @@ class _AddressPageState extends State<AddressPage> {
                                   elevation: 7.0,
                                   child: FlatButton(
                                     onPressed: () {
-                                      _signup();
+                                      _uploadAddress();
                                       // _signup();
                                     },
                                     child: Center(
@@ -200,7 +203,7 @@ class _AddressPageState extends State<AddressPage> {
     );
   }
 
-  void _signup() async {
+  void _uploadAddress() async {
     if (nameController.text.length == 0) {
       _showDilog('Error', "Enter valid Name");
       return null;
@@ -214,11 +217,16 @@ class _AddressPageState extends State<AddressPage> {
       _showDilog('Error', "Enter valid Number");
       return null;
     }
+    if (addressController.text.length == 0) {
+      _showDilog('Error', "Enter valid Address");
+      return null;
+    }
 
-    var response = await http.post("$api/register", body: {
+    var response = await http.post("$api/addAddress", body: {
       "name": nameController.text,
       "email": emailController.text,
       "mobile": numberController.text,
+      "address": addressController.text,
     });
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
@@ -226,14 +234,7 @@ class _AddressPageState extends State<AddressPage> {
       return null;
     } else {
       if (datauser['flag'] == '1') {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      } else {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        pref.setString("email", emailController.text);
-        pref.setString("number", numberController.text);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyApp()));
+        uploadProduct(datauser['order_id']);
       }
     }
   }
@@ -254,5 +255,28 @@ class _AddressPageState extends State<AddressPage> {
             ],
           );
         });
+  }
+
+  uploadProduct(var orderid) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var email = pref.getString("email");
+    num totalamount = 0.0;
+    int count = 0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    count = j.length;
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
+
+    await http.post("$api/updateOrderDetails", body: {
+      "order_price": totalamount,
+      "order_count": count,
+      "order_id": orderid,
+      "email": email,
+    });
   }
 }

@@ -2,6 +2,7 @@ import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'address_form.dart';
+import 'allproduct_model.dart';
 import 'cart_model.dart';
 import 'checkout.dart';
 import 'database/database_helper.dart';
@@ -86,9 +87,9 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
+                padding: const EdgeInsets.only(top: 18.0),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height - 30,
+                  height: MediaQuery.of(context).size.height * 0.70,
                   child: FutureBuilder(
                       future: DatabaseHelper.instance.getProduct(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -152,6 +153,7 @@ class _CartPageState extends State<CartPage> {
                                                         product.orderQty) +
                                                     "/-"),
                                               ),
+                                              SizedBox(height: 20),
                                               Row(
                                                 children: <Widget>[
                                                   Center(
@@ -300,7 +302,50 @@ class _CartPageState extends State<CartPage> {
                       }),
                 ),
               ),
-              SizedBox(height: 100),
+              Container(
+                child: FutureBuilder(
+                    future: getTotal(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        List<GetTotal> data = snapshot.data;
+                        return Row(
+                          children: data
+                              .map(
+                                (product) => Container(
+                                  height: 60,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Card(
+                                    color: PrimaryColor,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Text(
+                                          "No. of Products:" +
+                                              product.count.toString(),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Total: \u20B9 " +
+                                              product.total.toString(),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
             ],
           ),
         ),
@@ -325,6 +370,27 @@ class _CartPageState extends State<CartPage> {
     setState(() {
       isLogin = 0;
     });
+  }
+
+  Future<List<GetTotal>> getTotal() async {
+    List<GetTotal> total = [];
+    num totalamount = 0.0;
+    int count = 0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    count = j.length;
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
+    GetTotal get = GetTotal(
+      count,
+      totalamount,
+    );
+    total.add(get);
+    return total;
   }
 
   void _selectQty(String title, String unit, String minimum, String productid) {
@@ -461,17 +527,17 @@ class _CartPageState extends State<CartPage> {
   }
 
   check() async {
-    List<Product> j = await DatabaseHelper.instance.getProduct();
-    for (int k = 0; k < j.length; k++) {
-      print(j[k].productName);
-      print(k);
-    }
     int i = await DatabaseHelper.instance.checkProduct();
     if (i == 1) {
       _showDilog("Warning", "Please select order Qty for all products");
     } else {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AddressPage()));
+      if (isLogin == 1) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AddressPage()));
+        // DatabaseHelper.instance.getProductTotal();
+      } else {
+        _showDilog("Warning", "Please Login For Checkout");
+      }
     }
   }
 }

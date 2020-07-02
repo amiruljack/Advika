@@ -39,3 +39,12 @@ class GetAllProduct {
   //     productminimumunit= map['productminimumunit'];
   // }
 }
+
+class GetTotal {
+  final int count;
+  final num total;
+  GetTotal(
+    this.count,
+    this.total,
+  );
+}
