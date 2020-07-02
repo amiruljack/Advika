@@ -154,7 +154,7 @@ class _AddressPageState extends State<AddressPage> {
                                   color: Colors.green,
                                   elevation: 7.0,
                                   child: FlatButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       _uploadAddress();
                                       // _signup();
                                     },
@@ -235,6 +235,7 @@ class _AddressPageState extends State<AddressPage> {
     } else {
       if (datauser['flag'] == '1') {
         uploadProduct(datauser['order_id']);
+        _showDilog("success", "text");
       }
     }
   }
@@ -273,10 +274,22 @@ class _AddressPageState extends State<AddressPage> {
     }
 
     await http.post("$api/updateOrderDetails", body: {
-      "order_price": totalamount,
-      "order_count": count,
-      "order_id": orderid,
+      "order_price": totalamount.toString(),
+      "order_count": count.toString(),
+      "order_id": orderid.toString(),
       "email": email,
     });
+    var prod = await DatabaseHelper.instance.getProduct();
+
+    for (int k = 0; k < prod.length; k++) {
+      print(prod[k].productId);
+      // prod[k]['orderqty']
+      await http.post("$api/updateProductDetails", body: {
+        "product_id": prod[k].productId,
+        "product_qty": prod[k].orderQty,
+        "product_total": totalamount.toString(),
+        "order_id": orderid.toString()
+      });
+    }
   }
 }
