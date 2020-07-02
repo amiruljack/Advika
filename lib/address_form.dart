@@ -9,6 +9,7 @@ import 'drawer.dart';
 import 'login.dart';
 import 'main.dart';
 import 'path.dart';
+import 'success.dart';
 
 class AddressPage extends StatefulWidget {
   @override
@@ -268,7 +269,10 @@ class _AddressPageState extends State<AddressPage> {
     } else {
       if (datauser['flag'] == '1') {
         uploadProduct(datauser['order_id']);
-        _showDilog("success", "text");
+        if (group == 0) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SuccessPage()));
+        }
       }
     }
   }

@@ -20,6 +20,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final forgetController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
@@ -107,10 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: EdgeInsets.only(top: 15.0, left: 20.0),
                           child: InkWell(
                             onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => ForgetPassword()));
+                              _forgetPassword();
                             },
                             child: Text(
                               'Forgot Password',
@@ -290,5 +289,109 @@ class _LoginPageState extends State<LoginPage> {
             ],
           );
         });
+  }
+
+  void _forgetPassword() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Forget Password"),
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    autocorrect: true,
+                    controller: forgetController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                        labelText: 'Enter Email',
+                        labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green))),
+                    //obscureText: true,
+                  ),
+                  SizedBox(height: 10.0),
+
+                  SizedBox(height: 20.0),
+                  Container(
+                      height: 40.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.greenAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: FlatButton(
+                          onPressed: () async {
+                            forgetPass();
+                          },
+                          child: Center(
+                            child: Text(
+                              'Forget',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat'),
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(height: 20.0),
+                  Container(
+                    height: 35.0,
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                              width: 1.0),
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Center(
+                          child: Text('Go Back',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat')),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void forgetPass() async {
+    if (forgetController.text.length == 0) {
+      _showDilog('Error', "Enter valid email");
+      return null;
+    }
+
+    var response = await http.post("$api/forgetPassword", body: {
+      "email": forgetController.text,
+    });
+    var datauser = json.decode(response.body);
+    print(datauser);
+    if (datauser.length == 0) {
+      _showDilog('unautorized access', "Enter valid credential");
+      return null;
+    } else {
+      if (datauser['flag'] == '1') {
+        _showDilog("Success",
+            "Your Password is successfully updated please visit your email");
+      }
+    }
   }
 }
