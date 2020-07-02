@@ -7,12 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'allproduct_model.dart';
 import 'cart.dart';
 import 'database/database_helper.dart';
-import 'login.dart';
-import 'main.dart';
-import 'package/bottomNav.dart';
 import 'package:http/http.dart' as http;
 import 'path.dart';
-import 'profile.dart';
 
 class ProductPage extends StatefulWidget {
   ProductPage(this.productid, {Key key}) : super(key: key);
@@ -24,7 +20,6 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   int productid;
   int ind = 0;
-  int _currentIndex = 2;
   PageController _pageController;
   var isLogin;
   int i = 0;

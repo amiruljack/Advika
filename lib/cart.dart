@@ -1,15 +1,12 @@
 import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'address_form.dart';
 import 'cart_model.dart';
 import 'checkout.dart';
 import 'database/database_helper.dart';
-import 'login.dart';
-import 'main.dart';
-import 'package/bottomNav.dart';
 import 'path.dart';
 import 'product.dart';
-import 'profile.dart';
 
 class CartPage extends StatefulWidget {
   CartPage({Key key}) : super(key: key);
@@ -464,12 +461,17 @@ class _CartPageState extends State<CartPage> {
   }
 
   check() async {
+    List<Product> j = await DatabaseHelper.instance.getProduct();
+    for (int k = 0; k < j.length; k++) {
+      print(j[k].productName);
+      print(k);
+    }
     int i = await DatabaseHelper.instance.checkProduct();
     if (i == 1) {
       _showDilog("Warning", "Please select order Qty for all products");
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CheckoutPage()));
+          context, MaterialPageRoute(builder: (context) => AddressPage()));
     }
   }
 }

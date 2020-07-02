@@ -1,38 +1,30 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'cart.dart';
-import 'drawer.dart';
 import 'login.dart';
 import 'main.dart';
 import 'path.dart';
 
-class SignupPage extends StatefulWidget {
+class AddressPage extends StatefulWidget {
   @override
-  _SignupPageState createState() => _SignupPageState();
+  _AddressPageState createState() => _AddressPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _AddressPageState extends State<AddressPage> {
   final formkey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final numberController = TextEditingController();
-  final passwordController = TextEditingController();
+  final addressController = TextEditingController();
 
   String name = '';
   String email = '';
   String number = '';
   String password = '';
   String msg = '';
-  Future<File> file;
   String status = '';
-  String base64Image;
-  File tmpFile;
   String errMessage = 'Error Uploading Image';
-
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
@@ -41,16 +33,15 @@ class _SignupPageState extends State<SignupPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
-          drawer: DrawerPage(),
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
               IconButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => CartPage()));
+                        MaterialPageRoute(builder: (context) => LoginPage()));
                   },
-                  icon: Icon(Icons.add_shopping_cart))
+                  icon: Icon(Icons.supervised_user_circle))
             ],
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -59,6 +50,7 @@ class _SignupPageState extends State<SignupPage> {
               ],
             ),
           ),
+          //resizeToAvoidBottomPadding: false,
           body: Form(
             child: SingleChildScrollView(
               child: Column(
@@ -121,21 +113,6 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             SizedBox(height: 10.0),
                             TextField(
-                              keyboardType: TextInputType.multiline,
-                              controller: passwordController,
-                              decoration: InputDecoration(
-                                  labelText: 'PASSWORD ',
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.green))),
-                              obscureText: true,
-                            ),
-                            SizedBox(height: 10.0),
-                            TextField(
                               controller: numberController,
                               decoration: InputDecoration(
                                   labelText: 'Contact Number ',
@@ -143,6 +120,23 @@ class _SignupPageState extends State<SignupPage> {
                                       fontFamily: 'Montserrat',
                                       fontWeight: FontWeight.bold,
                                       color: Colors.grey),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.green))),
+                            ),
+                            SizedBox(height: 10.0),
+                            TextField(
+                              controller: addressController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                  labelText: 'Address',
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                  // hintText: 'EMAIL',
+                                  // hintStyle: ,
                                   focusedBorder: UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.green))),
@@ -163,7 +157,7 @@ class _SignupPageState extends State<SignupPage> {
                                     },
                                     child: Center(
                                       child: Text(
-                                        'SIGNUP',
+                                        'PROCEED',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -199,27 +193,6 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ],
                         )),
-                    // SizedBox(height: 15.0),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     Text(
-                    //       'New to Spotify?',
-                    //       style: TextStyle(
-                    //         fontFamily: 'Montserrat',
-                    //       ),
-                    //     ),
-                    //     SizedBox(width: 5.0),
-                    //     InkWell(
-                    //       child: Text('Register',
-                    //           style: TextStyle(
-                    //               color: Colors.green,
-                    //               fontFamily: 'Montserrat',
-                    //               fontWeight: FontWeight.bold,
-                    //               decoration: TextDecoration.underline)),
-                    //     )
-                    //   ],
-                    // )
                     SizedBox(height: 30.0),
                   ]),
             ),
@@ -236,10 +209,7 @@ class _SignupPageState extends State<SignupPage> {
       _showDilog('Error', "Enter valid Email");
       return null;
     }
-    if (passwordController.text.length == 0) {
-      _showDilog('Error', "Enter valid Password ");
-      return null;
-    }
+
     if (numberController.text.length == 0) {
       _showDilog('Error', "Enter valid Number");
       return null;
@@ -248,7 +218,6 @@ class _SignupPageState extends State<SignupPage> {
     var response = await http.post("$api/register", body: {
       "name": nameController.text,
       "email": emailController.text,
-      "password": passwordController.text,
       "mobile": numberController.text,
     });
     var datauser = json.decode(response.body);
