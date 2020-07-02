@@ -48,3 +48,10 @@ class GetTotal {
     this.total,
   );
 }
+
+class GetBanner {
+  final String image;
+  GetBanner(
+    this.image,
+  );
+}

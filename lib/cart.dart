@@ -527,13 +527,27 @@ class _CartPageState extends State<CartPage> {
   }
 
   check() async {
+    num totalamount = 0.0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
     int i = await DatabaseHelper.instance.checkProduct();
     if (i == 1) {
       _showDilog("Warning", "Please select order Qty for all products");
     } else {
       if (isLogin == 1) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AddressPage()));
+        if (totalamount >= 100.0) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddressPage()));
+        } else {
+          _showDilog("Warning", "Minimum Order Is \u20B9 100/-");
+        }
+
         // DatabaseHelper.instance.getProductTotal();
       } else {
         _showDilog("Warning", "Please Login For Checkout");

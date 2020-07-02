@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'cart.dart';
@@ -20,7 +21,7 @@ class _AddressPageState extends State<AddressPage> {
   final emailController = TextEditingController();
   final numberController = TextEditingController();
   final addressController = TextEditingController();
-
+  int group = 0;
   String name = '';
   String email = '';
   String number = '';
@@ -117,6 +118,7 @@ class _AddressPageState extends State<AddressPage> {
                             SizedBox(height: 10.0),
                             TextField(
                               controller: numberController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                   labelText: 'Contact Number ',
                                   labelStyle: TextStyle(
@@ -145,6 +147,37 @@ class _AddressPageState extends State<AddressPage> {
                                           BorderSide(color: Colors.green))),
                             ),
                             SizedBox(height: 10.0),
+                            Wrap(
+                              children: <Widget>[
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text("Cash On Delivery"),
+                                      Radio(
+                                        value: 0,
+                                        groupValue: group,
+                                        onChanged: (T) {
+                                          setState(() {
+                                            group = T;
+                                          });
+                                        },
+                                      ),
+                                      Text("Online Payment"),
+                                      Radio(
+                                        value: 1,
+                                        groupValue: group,
+                                        onChanged: (T) {
+                                          setState(() {
+                                            group = T;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                             SizedBox(height: 50.0),
                             Container(
                                 height: 40.0,
@@ -277,17 +310,18 @@ class _AddressPageState extends State<AddressPage> {
       "order_price": totalamount.toString(),
       "order_count": count.toString(),
       "order_id": orderid.toString(),
+      "payment_type": group.toString(),
       "email": email,
     });
     var prod = await DatabaseHelper.instance.getProduct();
 
     for (int k = 0; k < prod.length; k++) {
-      print(prod[k].productId);
+      var t = num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']);
       // prod[k]['orderqty']
       await http.post("$api/updateProductDetails", body: {
         "product_id": prod[k].productId,
         "product_qty": prod[k].orderQty,
-        "product_total": totalamount.toString(),
+        "product_total": t.toString(),
         "order_id": orderid.toString()
       });
     }

@@ -88,22 +88,35 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              CarouselSlider(
-                options: CarouselOptions(
-                  autoPlay: true,
-                  enableInfiniteScroll: true,
-                ),
-                items: imgList
-                    .map((item) => Container(
-                          child: Center(
-                              child: Image.network(item,
-                                  fit: BoxFit.cover,
-                                  width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height / 6)),
-                        ))
-                    .toList(),
-              ),
+              FutureBuilder(
+                  future: getBanner(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return CarouselSlider(
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          enableInfiniteScroll: true,
+                        ),
+                        items: imgList
+                            .map((item) => Container(
+                                  child: Center(
+                                      child: Image.network(item,
+                                          fit: BoxFit.cover,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              6)),
+                                ))
+                            .toList(),
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
               Container(
                 height: MediaQuery.of(context).size.height * 0.60,
                 child: FutureBuilder(
@@ -343,5 +356,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           );
         });
+  }
+
+  Future<List<GetBanner>> getBanner() async {
+    var response = await http.post("$api/getBanner");
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+    List<GetBanner> rp = [];
+    //   const oneSec = const Duration(seconds:5);
+    // new Timer.periodic(oneSec, (Timer t) => setState((){
+
+    // }));
+    for (var res in dataUser) {
+      GetBanner data = GetBanner(res['banner_image']);
+      rp.add(data);
+    }
+
+    return rp;
   }
 }
