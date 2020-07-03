@@ -136,9 +136,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                                 crossAxisCount: 2,
-                                childAspectRatio:
-                                    MediaQuery.of(context).size.height /
-                                        (MediaQuery.of(context).size.width * 3),
+                                childAspectRatio: MediaQuery.of(context)
+                                        .size
+                                        .height /
+                                    (MediaQuery.of(context).size.width * 3.5),
                                 children: data
                                     .map(
                                       (product) => GestureDetector(
@@ -169,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
-                                                      5),
+                                                      6),
                                               Center(
                                                 child: Text(
                                                   product.productname,
