@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:Advika/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -272,6 +273,10 @@ class _AddressPageState extends State<AddressPage> {
         if (group == 0) {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => SuccessPage()));
+        } else {
+          var total = totalCount();
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Payment(total)));
         }
       }
     }
@@ -329,5 +334,18 @@ class _AddressPageState extends State<AddressPage> {
         "order_id": orderid.toString()
       });
     }
+  }
+
+  totalCount() async {
+    num totalamount = 0.0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
+    return totalamount;
   }
 }
