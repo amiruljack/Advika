@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'allproduct_model.dart';
@@ -183,15 +184,17 @@ class _ProductPageState extends State<ProductPage> {
                                                   if (qtyController
                                                           .text.length ==
                                                       0) {
-                                                    _showDilog("Warning",
-                                                        "Please Enter Product Qty");
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Enter Product Qty");
                                                   } else if (num.parse(
                                                           qtyController.text) <
                                                       num.parse(snapshot
                                                           .data[index]
                                                           .productminimum)) {
-                                                    _showDilog("Warning",
-                                                        "Please Enter Qty Greater then minimum qty.");
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Enter Qty Greater then minimum qty.");
                                                   } else {
                                                     await DatabaseHelper
                                                         .instance
@@ -224,8 +227,9 @@ class _ProductPageState extends State<ProductPage> {
                                                       DatabaseHelper.orderQty:
                                                           qtyController.text,
                                                     });
-                                                    _showDilog("Success",
-                                                        "product Successfully Added to your Cart");
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "product Successfully Added to your Cart");
                                                     setState(() {
                                                       ind = 1;
                                                     });
@@ -304,24 +308,6 @@ class _ProductPageState extends State<ProductPage> {
         ind = 1;
       });
     }
-  }
-
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
   }
 
   logout() async {

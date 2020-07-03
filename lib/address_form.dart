@@ -250,20 +250,20 @@ class _AddressPageState extends State<AddressPage> {
 
   void _uploadAddress() async {
     if (nameController.text.length == 0) {
-      _showDilog('Error', "Enter valid Name");
+      Fluttertoast.showToast(msg: "Enter valid Name");
       return null;
     }
     if (emailController.text.length == 0) {
-      _showDilog('Error', "Enter valid Email");
+      Fluttertoast.showToast(msg: "Enter valid Email");
       return null;
     }
 
     if (numberController.text.length == 0) {
-      _showDilog('Error', "Enter valid Number");
+      Fluttertoast.showToast(msg: "Enter valid Number");
       return null;
     }
     if (addressController.text.length == 0) {
-      _showDilog('Error', "Enter valid Address");
+      Fluttertoast.showToast(msg: "Enter valid Address");
       return null;
     }
 
@@ -275,7 +275,9 @@ class _AddressPageState extends State<AddressPage> {
     });
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
-      _showDilog('unautorized access', "Enter valid credential");
+      Fluttertoast.showToast(
+          msg: 'unautorized access:' + "Enter valid credential");
+
       return null;
     } else {
       if (datauser['flag'] == '1') {
@@ -294,23 +296,23 @@ class _AddressPageState extends State<AddressPage> {
     }
   }
 
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
-  }
+  // void _showDilog(String title, String text) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(text),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text("ok"))
+  //           ],
+  //         );
+  //       });
+  // }
 
   uploadProduct(var orderid) async {
     setState(() {

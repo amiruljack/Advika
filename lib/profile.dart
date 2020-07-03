@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'main.dart';
@@ -276,16 +277,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _updateprofile() async {
     if (nameController.text.length == 0) {
-      _showDilog('Error', "Enter valid Name");
+      Fluttertoast.showToast(msg: "Enter valid Name");
       return null;
     }
     if (emailController.text.length == 0) {
-      _showDilog('Error', "Enter valid Email");
+      Fluttertoast.showToast(msg: "Enter valid Email");
       return null;
     }
 
     if (numberController.text.length == 0) {
-      _showDilog('Error', "Enter valid Number");
+      Fluttertoast.showToast(msg: "Enter valid Email");
       return null;
     }
 
@@ -305,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
         getProfile();
         pref.setString("email", emailController.text);
       });
-      _showDilog("Success", "Succeefully updated your profile");
+      Fluttertoast.showToast(msg: "Succeefully updated your profile");
     }
   }
 
@@ -326,23 +327,5 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       isLogin = 0;
     });
-  }
-
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
   }
 }

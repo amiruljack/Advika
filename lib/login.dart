@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Advika/main.dart';
 import 'package:Advika/register.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -259,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
     // print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
-      _showDilog('Warning', "register your self");
+      Fluttertoast.showToast(msg: "register your self");
     } else {
       if (datauser['flag'] == '1') {
         SharedPreferences pref = await SharedPreferences.getInstance();
@@ -268,27 +269,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MyApp()));
       } else {
-        _showDilog('Warning', "register your self");
+        Fluttertoast.showToast(msg: "register your self");
       }
     }
-  }
-
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
   }
 
   void _forgetPassword() {
@@ -375,7 +358,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void forgetPass() async {
     if (forgetController.text.length == 0) {
-      _showDilog('Error', "Enter valid email");
+      Fluttertoast.showToast(msg: "Enter valid email");
       return null;
     }
 
@@ -385,12 +368,13 @@ class _LoginPageState extends State<LoginPage> {
     var datauser = json.decode(response.body);
     print(datauser);
     if (datauser.length == 0) {
-      _showDilog('unautorized access', "Enter valid credential");
+      Fluttertoast.showToast(msg: "Enter valid credential");
       return null;
     } else {
       if (datauser['flag'] == '1') {
-        _showDilog("Success",
-            "Your Password is successfully updated please visit your email");
+        Fluttertoast.showToast(
+            msg:
+                "Your Password is successfully updated please visit your email");
       }
     }
   }

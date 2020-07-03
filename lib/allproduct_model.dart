@@ -55,3 +55,22 @@ class GetBanner {
     this.image,
   );
 }
+
+class GetOrder {
+  final String orderid;
+  final String orderprice;
+  final String ordercount;
+  final String orderstatus;
+  final String orderdate;
+  final String paymenttype;
+  final String paymentstatus;
+  GetOrder(
+    this.orderid,
+    this.orderprice,
+    this.ordercount,
+    this.orderstatus,
+    this.orderdate,
+    this.paymenttype,
+    this.paymentstatus,
+  );
+}

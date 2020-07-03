@@ -5,6 +5,8 @@ import 'package:Advika/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'order.dart';
+
 class DrawerPage extends StatefulWidget {
   // DrawerPage({this.userid}) ;
 
@@ -80,16 +82,20 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: new Icon(Icons.query_builder),
             title: new Text("ORDERS"),
             onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(),));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderPage(),
+                  ));
             },
           ),
-          new ListTile(
-            leading: new Icon(Icons.history),
-            title: new Text("HISTORY"),
-            onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryPage(),));
-            },
-          ),
+          // new ListTile(
+          //   leading: new Icon(Icons.history),
+          //   title: new Text("HISTORY"),
+          //   onTap: () {
+          //     // Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryPage(),));
+          //   },
+          // ),
           new ListTile(
             leading: new Icon(Icons.mode_edit),
             title: new Text("EDIT PROFILE"),

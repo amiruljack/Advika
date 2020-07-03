@@ -5,6 +5,7 @@ import 'package:Advika/cart.dart';
 import 'package:Advika/drawer.dart';
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/database_helper.dart';
 import 'package/carousel_slider.dart';
@@ -234,13 +235,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                                     .unitname,
                                                           });
                                                           if (i == 0) {
-                                                            _showDilog(
-                                                                "Thankyou",
-                                                                "Product Is Already Added in The Cart");
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Product Is Already Added in The Cart");
                                                           } else {
-                                                            _showDilog(
-                                                                "Thankyou",
-                                                                "Product Is Added in The Cart");
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Product Is Added in The Cart");
                                                           }
                                                         },
                                                       )
@@ -338,24 +339,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       isLogin = 0;
     });
-  }
-
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
   }
 
   Future<List<GetBanner>> getBanner() async {

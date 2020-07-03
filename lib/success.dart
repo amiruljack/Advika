@@ -1,4 +1,5 @@
 import 'package:Advika/drawer.dart';
+import 'package:Advika/main.dart';
 import 'package:flutter/material.dart';
 
 import 'cart.dart';
@@ -66,7 +67,10 @@ class _SuccessPageState extends State<SuccessPage> {
                   color: PrimaryColor,
                   elevation: 7.0,
                   child: FlatButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MyApp()));
+                    },
                     child: Center(
                       child: Text(
                         'Continue Shopping',

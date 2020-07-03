@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'cart.dart';
@@ -229,19 +230,19 @@ class _SignupPageState extends State<SignupPage> {
 
   void _signup() async {
     if (nameController.text.length == 0) {
-      _showDilog('Error', "Enter valid Name");
+      Fluttertoast.showToast(msg: "Enter valid Name");
       return null;
     }
     if (emailController.text.length == 0) {
-      _showDilog('Error', "Enter valid Email");
+      Fluttertoast.showToast(msg: "Enter valid Email");
       return null;
     }
     if (passwordController.text.length == 0) {
-      _showDilog('Error', "Enter valid Password ");
+      Fluttertoast.showToast(msg: "Enter valid Password ");
       return null;
     }
     if (numberController.text.length == 0) {
-      _showDilog('Error', "Enter valid Number");
+      Fluttertoast.showToast(msg: "Enter valid Number");
       return null;
     }
 
@@ -253,7 +254,7 @@ class _SignupPageState extends State<SignupPage> {
     });
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
-      _showDilog('unautorized access', "Enter valid credential");
+      Fluttertoast.showToast(msg: "Enter valid credential");
       return null;
     } else {
       if (datauser['flag'] == '1') {
@@ -269,21 +270,21 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
-  }
+  // void _showDilog(String title, String text) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(text),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text("ok"))
+  //           ],
+  //         );
+  //       });
+  // }
 }

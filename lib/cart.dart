@@ -1,5 +1,6 @@
 import 'package:Advika/drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'address_form.dart';
 import 'allproduct_model.dart';
@@ -437,15 +438,16 @@ class _CartPageState extends State<CartPage> {
                             print(num.parse(minimum));
                             if (num.parse(qtyCtrl.text) > num.parse(minimum)) {
                               // _editGroupMember(id);
-                              int i = await DatabaseHelper.instance.updateCart({
+                              await DatabaseHelper.instance.updateCart({
                                 DatabaseHelper.productId: productid,
                                 DatabaseHelper.orderQty: qtyCtrl.text,
                               });
-                              print(i);
-                              _showDilog("Success", "Qty is Added succesfully");
+                              Fluttertoast.showToast(
+                                  msg: "Qty is Added succesfully");
                             } else {
-                              _showDilog("Warning ",
-                                  "Please Add Product Quantity Greater then Minimum Qty. ");
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "Please Add Product Quantity Greater then Minimum Qty. ");
                             }
                             // Navigator.of(context).pop();
                           },
@@ -494,23 +496,23 @@ class _CartPageState extends State<CartPage> {
         });
   }
 
-  void _showDilog(String title, String text) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(text),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"))
-            ],
-          );
-        });
-  }
+  // void _showDilog(String title, String text) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(text),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text("ok"))
+  //           ],
+  //         );
+  //       });
+  // }
 
   countPrice(String p, String u) {
     if (u != null) {
@@ -537,19 +539,19 @@ class _CartPageState extends State<CartPage> {
     }
     int i = await DatabaseHelper.instance.checkProduct();
     if (i == 1) {
-      _showDilog("Warning", "Please select order Qty for all products");
+      Fluttertoast.showToast(msg: "Please select order Qty for all products");
     } else {
       if (isLogin == 1) {
         if (totalamount >= 100.0) {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AddressPage()));
         } else {
-          _showDilog("Warning", "Minimum Order Is \u20B9 100/-");
+          Fluttertoast.showToast(msg: "Minimum Order Is \u20B9 100/-");
         }
 
         // DatabaseHelper.instance.getProductTotal();
       } else {
-        _showDilog("Warning", "Please Login For Checkout");
+        Fluttertoast.showToast(msg: "Please Login For Checkout");
       }
     }
   }

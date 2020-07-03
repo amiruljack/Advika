@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'allproduct_model.dart';
 import 'cart.dart';
-import 'cart_model.dart';
-import 'database/database_helper.dart';
+import 'drawer.dart';
 import 'path.dart';
-import 'product.dart';
+import 'package:http/http.dart' as http;
 
 class OrderPage extends StatefulWidget {
   OrderPage({Key key}) : super(key: key);
@@ -13,25 +16,11 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
-  int _currentIndex = 3;
-  PageController _pageController;
   var isLogin;
   int i = 0;
   @override
   void initState() {
     super.initState();
-
-    // _isLogin();
-    // DatabaseHelper.instance.deleteall();
-
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -42,6 +31,7 @@ class _OrderPageState extends State<OrderPage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: DrawerPage(),
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
@@ -84,7 +74,7 @@ class _OrderPageState extends State<OrderPage> {
                                       Row(
                                         children: <Widget>[
                                           new Text(
-                                            "User Email : ",
+                                            "Order Id: ",
                                             style: TextStyle(
                                                 fontSize: 11.0,
                                                 fontFamily: 'Montserrat',
@@ -92,7 +82,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 color: Colors.grey),
                                           ),
                                           new Text(
-                                            snapshot.data[index].useremail,
+                                            snapshot.data[index].orderid,
                                             // set some style to text
                                             style: TextStyle(
                                                 fontSize: 11.0,
@@ -105,7 +95,7 @@ class _OrderPageState extends State<OrderPage> {
                                       Row(
                                         children: <Widget>[
                                           new Text(
-                                            "Pickup Date : ",
+                                            "Total Amount : ",
                                             style: TextStyle(
                                                 fontSize: 11.0,
                                                 fontFamily: 'Montserrat',
@@ -113,7 +103,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 color: Colors.grey),
                                           ),
                                           new Text(
-                                            snapshot.data[index].pickupdate,
+                                            snapshot.data[index].orderprice,
                                             // set some style to text
                                             style: TextStyle(
                                                 fontSize: 11.0,
@@ -126,7 +116,7 @@ class _OrderPageState extends State<OrderPage> {
                                       Row(
                                         children: <Widget>[
                                           new Text(
-                                            "Pickup Time : ",
+                                            "No. of Product: ",
                                             style: TextStyle(
                                                 fontSize: 11.0,
                                                 fontFamily: 'Montserrat',
@@ -134,7 +124,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 color: Colors.grey),
                                           ),
                                           new Text(
-                                            snapshot.data[index].pickuptime,
+                                            snapshot.data[index].ordercount,
                                             // set some style to text
                                             style: TextStyle(
                                                 fontSize: 11.0,
@@ -144,11 +134,11 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                         ],
                                       ),
-                                      snapshot.data[index].returndate != "0"
+                                      snapshot.data[index].orderstatus == "1"
                                           ? Row(
                                               children: <Widget>[
                                                 new Text(
-                                                  "Return Date : ",
+                                                  "Order Status : ",
                                                   style: TextStyle(
                                                       fontSize: 11.0,
                                                       fontFamily: 'Montserrat',
@@ -157,8 +147,7 @@ class _OrderPageState extends State<OrderPage> {
                                                       color: Colors.grey),
                                                 ),
                                                 new Text(
-                                                  snapshot
-                                                      .data[index].returndate,
+                                                  "Booked",
                                                   // set some style to text
                                                   style: TextStyle(
                                                       fontSize: 11.0,
@@ -170,13 +159,9 @@ class _OrderPageState extends State<OrderPage> {
                                               ],
                                             )
                                           : Row(
-                                              children: <Widget>[],
-                                            ),
-                                      snapshot.data[index].returndate != "0"
-                                          ? Row(
                                               children: <Widget>[
                                                 new Text(
-                                                  "Return Time : ",
+                                                  "Order Status : ",
                                                   style: TextStyle(
                                                       fontSize: 11.0,
                                                       fontFamily: 'Montserrat',
@@ -185,8 +170,31 @@ class _OrderPageState extends State<OrderPage> {
                                                       color: Colors.grey),
                                                 ),
                                                 new Text(
-                                                  snapshot
-                                                      .data[index].returntime,
+                                                  "Deliverd",
+                                                  // set some style to text
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                      snapshot.data[index].paymenttype == "0"
+                                          ? Row(
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Payment Type : ",
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                                new Text(
+                                                  "Cash On Delivery",
                                                   // set some style to text
                                                   style: TextStyle(
                                                       fontSize: 11.0,
@@ -198,12 +206,79 @@ class _OrderPageState extends State<OrderPage> {
                                               ],
                                             )
                                           : Row(
-                                              children: <Widget>[],
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Payment Type : ",
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                                new Text(
+                                                  "Online Payment",
+                                                  // set some style to text
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                      snapshot.data[index].paymentstatus == "0"
+                                          ? Row(
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Payment Status : ",
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                                new Text(
+                                                  "Unpaid",
+                                                  // set some style to text
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            )
+                                          : Row(
+                                              children: <Widget>[
+                                                new Text(
+                                                  "Payment Status : ",
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                                new Text(
+                                                  "Paid",
+                                                  // set some style to text
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      fontFamily: 'Montserrat',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
                                             ),
                                       Row(
                                         children: <Widget>[
                                           new Text(
-                                            "OrderId : ",
+                                            "Order Date : ",
                                             style: TextStyle(
                                                 fontSize: 11.0,
                                                 fontFamily: 'Montserrat',
@@ -211,113 +286,7 @@ class _OrderPageState extends State<OrderPage> {
                                                 color: Colors.grey),
                                           ),
                                           new Text(
-                                            snapshot.data[index].city,
-                                            // set some style to text
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          new Text(
-                                            "Number Of products : ",
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                          new Text(
-                                            snapshot.data[index].dropCity,
-                                            // set some style to text
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          new Text(
-                                            "Payment Type : ",
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                          new Text(
-                                            snapshot.data[index].cartype,
-                                            // set some style to text
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          new Text(
-                                            "Payment Status : ",
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                          new Text(
-                                            snapshot.data[index].way,
-                                            // set some style to text
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          new Text(
-                                            "Payable Amount : ",
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                          new Text(
-                                            snapshot.data[index].payable,
-                                            // set some style to text
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          new Text(
-                                            "Status : ",
-                                            style: TextStyle(
-                                                fontSize: 11.0,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey),
-                                          ),
-                                          new Text(
-                                            // snapshot.data[index].payable,
-                                            snapshot.data[index].bookingstatus,
+                                            snapshot.data[index].orderdate,
                                             // set some style to text
                                             style: TextStyle(
                                                 fontSize: 11.0,
@@ -364,5 +333,31 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  _getOrder() {}
+  Future<List<GetOrder>> _getOrder() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var email = pref.getString("email");
+    var response = await http.post("$api/getOrder", body: {
+      "email": email,
+    });
+    var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+
+    List<GetOrder> rp = [];
+    //   const oneSec = const Duration(seconds:5);
+    // new Timer.periodic(oneSec, (Timer t) => setState((){
+
+    // }));
+    for (var res in dataUser) {
+      GetOrder data = GetOrder(
+          res['generatedorder_id'],
+          res['order_price'],
+          res['order_count'],
+          res['order_status'],
+          res['order_date'],
+          res['payment_type'],
+          res['payment_status']);
+      rp.add(data);
+    }
+
+    return rp;
+  }
 }
