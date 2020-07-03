@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/services.dart';
+
+import 'database/database_helper.dart';
 
 class Payment extends StatefulWidget {
-  Payment(this.total, {Key key}) : super(key: key);
-  final int total;
+  Payment({Key key}) : super(key: key);
+
   @override
   _PaymentState createState() => _PaymentState();
 }
 
 class _PaymentState extends State<Payment> {
-  int total;
   Razorpay _razorpay;
   @override
   void initState() {
@@ -20,6 +20,7 @@ class _PaymentState extends State<Payment> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    openCheckout();
   }
 
   @override
@@ -28,10 +29,19 @@ class _PaymentState extends State<Payment> {
     _razorpay.clear();
   }
 
-  void openCheckout() {
+  void openCheckout() async {
+    num totalamount = 0.0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
     var options = {
       'key': 'rzp_test_Wh0VxDyTQdsVcv',
-      'amount': widget.total * 100,
+      'amount': totalamount * 100,
       'name': 'Digiblade',
       'external': {
         'wallets': ['paytm'],
@@ -68,27 +78,7 @@ class _PaymentState extends State<Payment> {
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              LimitedBox(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(hintText: "please Enter amount"),
-                  onChanged: (value) {
-                    setState(() {
-                      totalAmount = num.parse(value);
-                    });
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              RaisedButton(
-                  onPressed: () {
-                    openCheckout();
-                  },
-                  child: Text("Payment")),
-            ],
+            children: <Widget>[],
           ),
         ),
       ),

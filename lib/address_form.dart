@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'package:Advika/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'cart.dart';
 import 'database/database_helper.dart';
 import 'drawer.dart';
-import 'login.dart';
-import 'main.dart';
 import 'path.dart';
 import 'success.dart';
 
@@ -23,6 +22,7 @@ class _AddressPageState extends State<AddressPage> {
   final emailController = TextEditingController();
   final numberController = TextEditingController();
   final addressController = TextEditingController();
+  var orderID;
   int group = 0;
   String name = '';
   String email = '';
@@ -30,6 +30,16 @@ class _AddressPageState extends State<AddressPage> {
   String password = '';
   String msg = '';
   String status = '';
+  Razorpay _razorpay;
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
   @override
   Widget build(BuildContext context) {
     const PrimaryColor = const Color(0xFF34a24b);
@@ -274,9 +284,11 @@ class _AddressPageState extends State<AddressPage> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => SuccessPage()));
         } else {
-          var total = totalCount();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Payment(total)));
+          try {
+            openCheckout();
+          } catch (e) {
+            print(e);
+          }
         }
       }
     }
@@ -301,6 +313,9 @@ class _AddressPageState extends State<AddressPage> {
   }
 
   uploadProduct(var orderid) async {
+    setState(() {
+      orderID = orderid;
+    });
     SharedPreferences pref = await SharedPreferences.getInstance();
     var email = pref.getString("email");
     num totalamount = 0.0;
@@ -336,7 +351,7 @@ class _AddressPageState extends State<AddressPage> {
     }
   }
 
-  totalCount() async {
+  Future<num> totalCount() async {
     num totalamount = 0.0;
     var j = await DatabaseHelper.instance.getProductTotal();
     for (int k = 0; k < j.length; k++) {
@@ -348,4 +363,54 @@ class _AddressPageState extends State<AddressPage> {
     }
     return totalamount;
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void openCheckout() async {
+    num totalamount = 0.0;
+    var j = await DatabaseHelper.instance.getProductTotal();
+    for (int k = 0; k < j.length; k++) {
+      if (j[k]['orderqty'] == null) {
+      } else {
+        totalamount = totalamount +
+            (num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']));
+      }
+    }
+    var options = {
+      'key': 'rzp_test_Wh0VxDyTQdsVcv',
+      'amount': totalamount * 100,
+      'name': 'Digiblade',
+      'external': {
+        'wallets': ['paytm'],
+      }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    print(orderID);
+    await http.post("$api/paymentSuccess", body: {
+      "orderid": orderID.toString(),
+    });
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SuccessPage()));
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "error:" + response.code.toString() + "." + response.message);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(msg: "external wallet:" + response.walletName);
+  }
+  // Fluttertoast.showToast(msg: "success:" + response.paymentId);
 }

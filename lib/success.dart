@@ -14,7 +14,6 @@ class SuccessPage extends StatefulWidget {
 class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     deleteCart();
   }

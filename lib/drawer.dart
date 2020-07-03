@@ -3,16 +3,7 @@ import 'package:Advika/login.dart';
 import 'package:Advika/main.dart';
 import 'package:Advika/profile.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-//import 'package:simple_permissions/simple_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'allcarpage.dart';
-// import 'editprofil.dart';
-// import 'history.dart';
-// import 'main.dart';
-// import 'order.dart';
-// import 'path.dart';
-// import 'twowaybookcar.dart';
 
 class DrawerPage extends StatefulWidget {
   // DrawerPage({this.userid}) ;

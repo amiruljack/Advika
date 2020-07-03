@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'address_form.dart';
 import 'allproduct_model.dart';
 import 'cart_model.dart';
-import 'checkout.dart';
 import 'database/database_helper.dart';
 import 'path.dart';
 import 'product.dart';
