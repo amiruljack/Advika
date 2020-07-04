@@ -96,17 +96,18 @@ class _DrawerPageState extends State<DrawerPage> {
           //     // Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryPage(),));
           //   },
           // ),
-          new ListTile(
-            leading: new Icon(Icons.mode_edit),
-            title: new Text("EDIT PROFILE"),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
-                  ));
-            },
-          ),
+          if (isLogin == 1)
+            new ListTile(
+              leading: new Icon(Icons.mode_edit),
+              title: new Text("EDIT PROFILE"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(),
+                    ));
+              },
+            ),
           // new Divider(),
           if (isLogin != 1)
             new ListTile(

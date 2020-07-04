@@ -175,16 +175,16 @@ class _AddressPageState extends State<AddressPage> {
                                           });
                                         },
                                       ),
-                                      Text("Online Payment"),
-                                      Radio(
-                                        value: 1,
-                                        groupValue: group,
-                                        onChanged: (T) {
-                                          setState(() {
-                                            group = T;
-                                          });
-                                        },
-                                      ),
+                                      // Text("Online Payment"),
+                                      // Radio(
+                                      //   value: 1,
+                                      //   groupValue: group,
+                                      //   onChanged: (T) {
+                                      //     setState(() {
+                                      //       group = T;
+                                      //     });
+                                      //   },
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -343,13 +343,21 @@ class _AddressPageState extends State<AddressPage> {
 
     for (int k = 0; k < prod.length; k++) {
       var t = num.parse(j[k]['productprice']) * num.parse(j[k]['orderqty']);
-      // prod[k]['orderqty']
+      // prod[k]['orderqty'print();
+      print(prod[k].productId);
+      print(prod[k].orderQty);
+      print(t.toString());
+      print(orderid.toString());
       await http.post("$api/updateProductDetails", body: {
         "product_id": prod[k].productId,
         "product_qty": prod[k].orderQty,
         "product_total": t.toString(),
         "order_id": orderid.toString()
       });
+      if (k == (prod.length - 1)) {
+        await DatabaseHelper.instance.deleteAll();
+        print('exit');
+      }
     }
   }
 

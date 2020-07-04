@@ -134,53 +134,75 @@ class _OrderPageState extends State<OrderPage> {
                                           ),
                                         ],
                                       ),
-                                      snapshot.data[index].orderstatus == "1"
-                                          ? Row(
-                                              children: <Widget>[
-                                                new Text(
-                                                  "Order Status : ",
-                                                  style: TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontFamily: 'Montserrat',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey),
-                                                ),
-                                                new Text(
-                                                  "Booked",
-                                                  // set some style to text
-                                                  style: TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontFamily: 'Montserrat',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey),
-                                                ),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: <Widget>[
-                                                new Text(
-                                                  "Order Status : ",
-                                                  style: TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontFamily: 'Montserrat',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey),
-                                                ),
-                                                new Text(
-                                                  "Deliverd",
-                                                  // set some style to text
-                                                  style: TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontFamily: 'Montserrat',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey),
-                                                ),
-                                              ],
+                                      if (snapshot.data[index].orderstatus ==
+                                          "1")
+                                        Row(
+                                          children: <Widget>[
+                                            new Text(
+                                              "Order Status : ",
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
                                             ),
+                                            new Text(
+                                              "Booked",
+                                              // set some style to text
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      if (snapshot.data[index].orderstatus ==
+                                          "0")
+                                        Row(
+                                          children: <Widget>[
+                                            new Text(
+                                              "Order Status : ",
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                            new Text(
+                                              "Deliverd",
+                                              // set some style to text
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      if (snapshot.data[index].orderstatus ==
+                                          "2")
+                                        Row(
+                                          children: <Widget>[
+                                            new Text(
+                                              "Order Status : ",
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                            new Text(
+                                              "Cancel By Vender",
+                                              // set some style to text
+                                              style: TextStyle(
+                                                  fontSize: 11.0,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
                                       snapshot.data[index].paymenttype == "0"
                                           ? Row(
                                               children: <Widget>[

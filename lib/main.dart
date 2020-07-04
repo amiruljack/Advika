@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
-                                                      6),
+                                                      5.5),
                                               Center(
                                                 child: Text(
                                                   product.productname,

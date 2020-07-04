@@ -16,7 +16,7 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    deleteCart();
+    // deleteCart();
   }
 
   @override
@@ -52,7 +52,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 child: Card(
                   child: Image.asset(
                     'assets/success.jpg',
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width - 10,
                   ),
                 ),
               ),
@@ -63,7 +63,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 height: 40.0,
                 child: Material(
                   borderRadius: BorderRadius.circular(20.0),
-                  shadowColor: Colors.yellowAccent,
+                  shadowColor: Colors.greenAccent,
                   color: PrimaryColor,
                   elevation: 7.0,
                   child: FlatButton(

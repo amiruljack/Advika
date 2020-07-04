@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'cart.dart';
+import 'drawer.dart';
 import 'main.dart';
 import 'package/bottomNav.dart';
 import 'path.dart';
@@ -37,7 +39,17 @@ class _ProfilePageState extends State<ProfilePage> {
         primaryColor: PrimaryColor,
       ),
       home: Scaffold(
+        drawer: DrawerPage(),
         appBar: AppBar(
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CartPage()));
+                },
+                icon: Icon(Icons.add_shopping_cart))
+          ],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -203,62 +215,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 30.0),
               ]),
         ),
-        bottomNavigationBar: BottomNavyBar(
-          selectedIndex: _currentIndex,
-          showElevation: true,
-          itemCornerRadius: 8,
-          curve: Curves.easeInBack,
-          onItemSelected: (index) => setState(() {
-            _currentIndex = index;
-            if (_currentIndex == 0) {
-              print("order.dart");
-            }
-            if (_currentIndex == 1) {
-              print("search.dart");
-            }
-            if (_currentIndex == 2) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyApp()));
-            }
-            if (_currentIndex == 3) {
-              print("cart.dart");
-            }
-          }),
-          items: [
-            BottomNavyBarItem(
-              icon: Icon(Icons.assignment),
-              title: Text('Orders'),
-              activeColor: Colors.purpleAccent,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Search'),
-              activeColor: Colors.yellow,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.apps),
-              title: Text('Home'),
-              activeColor: Colors.red,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.shopping_cart),
-              title: Text(
-                'Cart',
-              ),
-              activeColor: Colors.pink,
-              textAlign: TextAlign.center,
-            ),
-            BottomNavyBarItem(
-              icon: Icon(Icons.settings),
-              title: Text('Settings'),
-              activeColor: Colors.blue,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -302,11 +258,14 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     var datauser = json.decode(response.body);
     if (datauser["flag"] == "1") {
+      Fluttertoast.showToast(msg: "Succeefully updated your profile");
+
       setState(() {
         getProfile();
         pref.setString("email", emailController.text);
       });
-      Fluttertoast.showToast(msg: "Succeefully updated your profile");
+    } else {
+      Fluttertoast.showToast(msg: "something is wrong");
     }
   }
 
