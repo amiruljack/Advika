@@ -22,6 +22,7 @@ class _AddressPageState extends State<AddressPage> {
   final emailController = TextEditingController();
   final numberController = TextEditingController();
   final addressController = TextEditingController();
+  int tag = 0;
   var orderID;
   int group = 0;
   String name = '';
@@ -191,29 +192,56 @@ class _AddressPageState extends State<AddressPage> {
                               ],
                             ),
                             SizedBox(height: 50.0),
-                            Container(
-                                height: 40.0,
-                                child: Material(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  shadowColor: Colors.greenAccent,
-                                  color: Colors.green,
-                                  elevation: 7.0,
-                                  child: FlatButton(
-                                    onPressed: () async {
-                                      _uploadAddress();
-                                      // _signup();
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        'PROCEED',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Montserrat'),
+                            if (tag == 0)
+                              Container(
+                                  height: 40.0,
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    shadowColor: Colors.greenAccent,
+                                    color: Colors.green,
+                                    elevation: 7.0,
+                                    child: FlatButton(
+                                      onPressed: () async {
+                                        setState(() {
+                                          tag = 1;
+                                        });
+                                        _uploadAddress();
+                                        // _signup();
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          'PROCEED',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Montserrat'),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )),
+                                  ))
+                            else
+                              Container(
+                                  height: 40.0,
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    shadowColor: Colors.grey,
+                                    color: Colors.grey,
+                                    elevation: 7.0,
+                                    child: FlatButton(
+                                      onPressed: () async {
+                                        // _signup();
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          'PROCEED',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Montserrat'),
+                                        ),
+                                      ),
+                                    ),
+                                  )),
                             SizedBox(height: 20.0),
                             Container(
                               height: 40.0,

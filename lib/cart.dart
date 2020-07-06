@@ -436,7 +436,7 @@ class _CartPageState extends State<CartPage> {
                           onPressed: () async {
                             print(num.parse(qtyCtrl.text));
                             print(num.parse(minimum));
-                            if (num.parse(qtyCtrl.text) > num.parse(minimum)) {
+                            if (num.parse(qtyCtrl.text) >= num.parse(minimum)) {
                               // _editGroupMember(id);
                               await DatabaseHelper.instance.updateCart({
                                 DatabaseHelper.productId: productid,
@@ -444,6 +444,7 @@ class _CartPageState extends State<CartPage> {
                               });
                               Fluttertoast.showToast(
                                   msg: "Qty is Added succesfully");
+                              Navigator.of(context).pop();
                             } else {
                               Fluttertoast.showToast(
                                   msg:
