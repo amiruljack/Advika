@@ -38,12 +38,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> imgList = [
-    'http://w-safe.ml/advika/banner1.png',
-    'http://w-safe.ml/advika/banner2.jpg',
-    'http://w-safe.ml/advika/banner3.png',
-    'http://w-safe.ml/advika/banner4.jpg',
-  ];
   var isLogin;
   int i = 0;
   @override
@@ -85,205 +79,162 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FutureBuilder(
-                  future: getBanner(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      return CarouselSlider(
-                        options: CarouselOptions(
-                          autoPlay: true,
-                          enableInfiniteScroll: true,
-                        ),
-                        items: imgList
-                            .map((item) => Container(
-                                  child: Center(
-                                      child: Image.network(item,
-                                          fit: BoxFit.cover,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              6)),
-                                ))
-                            .toList(),
-                      );
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.60,
-                child: FutureBuilder(
-                    future: getProducts(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      int ind = 0;
+        body: FutureBuilder(
+            future: getProducts(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              int ind = 0;
 
-                      if (snapshot.hasData) {
-                        List<GetAllProduct> data = snapshot.data;
-                        return CustomScrollView(
-                          primary: false,
-                          slivers: <Widget>[
-                            SliverPadding(
-                              padding: const EdgeInsets.all(20),
-                              sliver: SliverGrid.count(
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                crossAxisCount: 2,
-                                childAspectRatio: MediaQuery.of(context)
-                                        .size
-                                        .height /
-                                    (MediaQuery.of(context).size.width * 3.5),
-                                children: data
-                                    .map(
-                                      (product) => GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProductPage(
-                                                          product.productid)));
-                                        },
-                                        child: Card(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Image.network(
-                                                  "$image/${product.productimage}",
+              if (snapshot.hasData) {
+                List<GetAllProduct> data = snapshot.data;
+                return CustomScrollView(
+                  slivers: <Widget>[
+                    SliverGrid.count(crossAxisCount: 1, children: <Widget>[
+                      FutureBuilder(
+                          future: getBanner(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              List<GetBanner> data = snapshot.data;
+                              return CarouselSlider(
+                                options: CarouselOptions(
+                                  height: 200,
+                                  carouselController: true,
+                                  autoPlay: true,
+                                  enableInfiniteScroll: true,
+                                ),
+                                items: data
+                                    .map((item) => Container(
+                                          child: Center(
+                                              child: Image.network(
+                                                  "$bannerimage/" + item.image,
                                                   fit: BoxFit.cover,
                                                   width: MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          2 -
-                                                      5,
+                                                      .size
+                                                      .width,
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
-                                                      6),
-                                              Center(
-                                                child: Text(
-                                                  product.productname.length <=
-                                                          15
-                                                      ? product.productname
-                                                      : product.productname
-                                                              .substring(
-                                                                  0, 12) +
-                                                          '...',
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              25),
-                                                ),
-                                              ),
-                                              Center(
-                                                child: Text(
-                                                    "1" + product.unitname),
-                                              ),
-                                              Center(
-                                                child: Text("\u20B9" +
-                                                    product.productprice +
-                                                    "/-"),
-                                              ),
-                                              Center(
-                                                child: ind == 0
-                                                    ? RaisedButton(
-                                                        color: Colors.green,
-                                                        child: Text(
-                                                            "Add to Cart",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                        onPressed: () async {
-                                                          int i =
-                                                              await DatabaseHelper
-                                                                  .instance
-                                                                  .addProduct({
-                                                            DatabaseHelper
-                                                                    .productId:
-                                                                product
-                                                                    .productid,
-                                                            DatabaseHelper
-                                                                    .productName:
-                                                                product
-                                                                    .productname,
-                                                            DatabaseHelper
-                                                                    .productImage:
-                                                                product
-                                                                    .productimage,
-                                                            DatabaseHelper
-                                                                    .productPrice:
-                                                                product
-                                                                    .productprice,
-                                                            DatabaseHelper
-                                                                    .minimumQty:
-                                                                product
-                                                                    .productminimum,
-                                                            DatabaseHelper
-                                                                    .categoryName:
-                                                                product
-                                                                    .categoryname,
-                                                            DatabaseHelper
-                                                                    .unitName:
-                                                                product
-                                                                    .unitname,
-                                                          });
-                                                          if (i == 0) {
-                                                            Fluttertoast.showToast(
-                                                                msg:
-                                                                    "Product Is Already Added in The Cart");
-                                                          } else {
-                                                            Fluttertoast.showToast(
-                                                                msg:
-                                                                    "Product Is Added in The Cart");
-                                                          }
-                                                        },
-                                                      )
-                                                    : RaisedButton(
-                                                        color: Colors.grey,
-                                                        child: Text(
-                                                            "Add to Cart",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                        onPressed: null,
-                                                      ),
-                                              ),
-                                            ],
-                                          ),
+                                                      3.5)),
+                                        ))
+                                    .toList(),
+                              );
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          }),
+                    ]),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(2),
+                      sliver: SliverGrid.count(
+                        crossAxisSpacing: 10,
+                        crossAxisCount: 2,
+                        childAspectRatio:
+                            (MediaQuery.of(context).size.width / 2) /
+                                (MediaQuery.of(context).size.height / 2),
+                        children: data
+                            .map(
+                              (product) => GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductPage(product.productid)));
+                                },
+                                child: Card(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Image.network(
+                                        "$image/${product.productimage}",
+                                        fit: BoxFit.fitWidth,
+                                        height: 120,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          product.productname,
+                                          style: TextStyle(fontSize: 12),
                                         ),
                                       ),
-                                    )
-                                    .toList(),
+                                      Center(
+                                        child: Text(
+                                          "\u20B9" +
+                                              product.productprice +
+                                              "/" +
+                                              product.unitname,
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: ind == 0
+                                            ? RaisedButton(
+                                                color: Colors.green,
+                                                child: Text("Add to Cart",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    )),
+                                                onPressed: () async {
+                                                  int i = await DatabaseHelper
+                                                      .instance
+                                                      .addProduct({
+                                                    DatabaseHelper.productId:
+                                                        product.productid,
+                                                    DatabaseHelper.productName:
+                                                        product.productname,
+                                                    DatabaseHelper.productImage:
+                                                        product.productimage,
+                                                    DatabaseHelper.productPrice:
+                                                        product.productprice,
+                                                    DatabaseHelper.minimumQty:
+                                                        product.productminimum,
+                                                    DatabaseHelper.categoryName:
+                                                        product.categoryname,
+                                                    DatabaseHelper.unitName:
+                                                        product.unitname,
+                                                    DatabaseHelper.orderQty: 1,
+                                                  });
+                                                  if (i == 0) {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Product Is Already Added in The Cart");
+                                                  } else {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Product Is Added in The Cart");
+                                                  }
+                                                },
+                                              )
+                                            : RaisedButton(
+                                                color: Colors.grey,
+                                                child: Text("Add to Cart",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    )),
+                                                onPressed: null,
+                                              ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }),
-              ),
-              SizedBox(height: 20)
-            ],
-          ),
-        ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
       ),
     );
   }
@@ -291,6 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<GetAllProduct>> getProducts() async {
     var response = await http.post("$api/allproduct");
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+
     List<GetAllProduct> rp = [];
     //   const oneSec = const Duration(seconds:5);
     // new Timer.periodic(oneSec, (Timer t) => setState((){
@@ -351,6 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<GetBanner>> getBanner() async {
     var response = await http.post("$api/getBanner");
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
+
     List<GetBanner> rp = [];
     //   const oneSec = const Duration(seconds:5);
     // new Timer.periodic(oneSec, (Timer t) => setState((){
