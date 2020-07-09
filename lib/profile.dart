@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'cart.dart';
 import 'drawer.dart';
-import 'main.dart';
-import 'package/bottomNav.dart';
 import 'path.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,7 +16,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _currentIndex = 4;
   var isLogin;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
