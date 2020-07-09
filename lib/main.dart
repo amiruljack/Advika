@@ -2,14 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:Advika/cart.dart';
-import 'package:Advika/category_model.dart';
 import 'package:Advika/drawer.dart';
-import 'package:Advika/fetchData.dart';
 import 'package:Advika/product.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'category_product.dart';
 import 'database/database_helper.dart';
 import 'package/carousel_slider.dart';
 import 'path.dart';
@@ -82,192 +79,200 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) => Column(
-                    children: <Widget>[
-                      FutureBuilder(
-                          future: getBanner(),
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              List<GetBanner> data = snapshot.data;
-                              return CarouselSlider(
-                                options: CarouselOptions(
-                                  height: 200,
-                                  carouselController: true,
-                                  autoPlay: true,
-                                  enableInfiniteScroll: true,
-                                ),
-                                items: data
-                                    .map((item) => Container(
-                                          child: Center(
-                                              child: Image.network(
-                                                  "$bannerimage/" + item.image,
-                                                  fit: BoxFit.cover,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      3.5)),
-                                        ))
-                                    .toList(),
-                              );
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          }),
-                      FutureBuilder(
-                          future: getProducts(),
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            int ind = 0;
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: FutureBuilder(
+                    future: getProducts(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      int ind = 0;
 
-                            if (snapshot.hasData) {
-                              List<GetAllProduct> data = snapshot.data;
-                              return Container(
-                                child: SliverGrid.count(
-                                  crossAxisSpacing: 10,
-                                  crossAxisCount: 2,
-                                  childAspectRatio:
-                                      (MediaQuery.of(context).size.width / 2) /
-                                          (MediaQuery.of(context).size.height /
-                                              2),
-                                  children: data
-                                      .map(
-                                        (product) => GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ProductPage(product
-                                                            .productid)));
-                                          },
-                                          child: Card(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Image.network(
-                                                  "$image/${product.productimage}",
-                                                  fit: BoxFit.fitWidth,
-                                                  height: 120,
-                                                ),
-                                                Center(
-                                                  child: Text(
-                                                    product.productname,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                ),
-                                                Center(
-                                                  child: Text(
-                                                    "\u20B9" +
-                                                        product.productprice +
-                                                        "/" +
-                                                        product.unitname,
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                ),
-                                                Center(
-                                                  child: ind == 0
-                                                      ? RaisedButton(
-                                                          color: Colors.green,
-                                                          child: Text(
-                                                              "Add to Cart",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              )),
-                                                          onPressed: () async {
-                                                            int i =
-                                                                await DatabaseHelper
-                                                                    .instance
-                                                                    .addProduct({
-                                                              DatabaseHelper
-                                                                      .productId:
-                                                                  product
-                                                                      .productid,
-                                                              DatabaseHelper
-                                                                      .productName:
-                                                                  product
-                                                                      .productname,
-                                                              DatabaseHelper
-                                                                      .productImage:
-                                                                  product
-                                                                      .productimage,
-                                                              DatabaseHelper
-                                                                      .productPrice:
-                                                                  product
-                                                                      .productprice,
-                                                              DatabaseHelper
-                                                                      .minimumQty:
-                                                                  product
-                                                                      .productminimum,
-                                                              DatabaseHelper
-                                                                      .categoryName:
-                                                                  product
-                                                                      .categoryname,
-                                                              DatabaseHelper
-                                                                      .unitName:
-                                                                  product
-                                                                      .unitname,
-                                                              DatabaseHelper
-                                                                  .orderQty: 1,
-                                                            });
-                                                            if (i == 0) {
-                                                              Fluttertoast
-                                                                  .showToast(
-                                                                      msg:
-                                                                          "Product Is Already Added in The Cart");
-                                                            } else {
-                                                              Fluttertoast
-                                                                  .showToast(
-                                                                      msg:
-                                                                          "Product Is Added in The Cart");
-                                                            }
-                                                          },
-                                                        )
-                                                      : RaisedButton(
-                                                          color: Colors.grey,
-                                                          child: Text(
-                                                              "Add to Cart",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              )),
-                                                          onPressed: null,
-                                                        ),
-                                                ),
-                                              ],
+                      if (snapshot.hasData) {
+                        List<GetAllProduct> data = snapshot.data;
+                        return CustomScrollView(
+                          slivers: <Widget>[
+                            SliverGrid.count(
+                                crossAxisCount: 1,
+                                children: <Widget>[
+                                  FutureBuilder(
+                                      future: getBanner(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          List<GetBanner> data = snapshot.data;
+                                          return CarouselSlider(
+                                            options: CarouselOptions(
+                                              height: 200,
+                                              carouselController: true,
+                                              autoPlay: true,
+                                              enableInfiniteScroll: true,
                                             ),
+                                            items: data
+                                                .map((item) => Container(
+                                                      child: Center(
+                                                          child: Image.network(
+                                                              "$bannerimage/" +
+                                                                  item.image,
+                                                              fit: BoxFit.cover,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height /
+                                                                  3.5)),
+                                                    ))
+                                                .toList(),
+                                          );
+                                        } else {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      }),
+                                ]),
+                            SliverPadding(
+                              padding: const EdgeInsets.all(2),
+                              sliver: SliverGrid.count(
+                                crossAxisSpacing: 10,
+                                crossAxisCount: 2,
+                                childAspectRatio:
+                                    (MediaQuery.of(context).size.width / 2) /
+                                        (MediaQuery.of(context).size.height /
+                                            2),
+                                children: data
+                                    .map(
+                                      (product) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductPage(
+                                                          product.productid)));
+                                        },
+                                        child: Card(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Image.network(
+                                                "$image/${product.productimage}",
+                                                fit: BoxFit.fitWidth,
+                                                height: 120,
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                  product.productname,
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                ),
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                  "\u20B9" +
+                                                      product.productprice +
+                                                      "/" +
+                                                      product.unitname,
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                ),
+                                              ),
+                                              Center(
+                                                child: ind == 0
+                                                    ? RaisedButton(
+                                                        color: Colors.green,
+                                                        child: Text(
+                                                            "Add to Cart",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                        onPressed: () async {
+                                                          int i =
+                                                              await DatabaseHelper
+                                                                  .instance
+                                                                  .addProduct({
+                                                            DatabaseHelper
+                                                                    .productId:
+                                                                product
+                                                                    .productid,
+                                                            DatabaseHelper
+                                                                    .productName:
+                                                                product
+                                                                    .productname,
+                                                            DatabaseHelper
+                                                                    .productImage:
+                                                                product
+                                                                    .productimage,
+                                                            DatabaseHelper
+                                                                    .productPrice:
+                                                                product
+                                                                    .productprice,
+                                                            DatabaseHelper
+                                                                    .minimumQty:
+                                                                product
+                                                                    .productminimum,
+                                                            DatabaseHelper
+                                                                    .categoryName:
+                                                                product
+                                                                    .categoryname,
+                                                            DatabaseHelper
+                                                                    .unitName:
+                                                                product
+                                                                    .unitname,
+                                                            DatabaseHelper
+                                                                .orderQty: 1,
+                                                          });
+                                                          if (i == 0) {
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Product Is Already Added in The Cart");
+                                                          } else {
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Product Is Added in The Cart");
+                                                          }
+                                                        },
+                                                      )
+                                                    : RaisedButton(
+                                                        color: Colors.grey,
+                                                        child: Text(
+                                                            "Add to Cart",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                        onPressed: null,
+                                                      ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      )
-                                      .toList(),
-                                ),
-                              );
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          })
-                    ],
-                  )),
-            ),
-          ],
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );
