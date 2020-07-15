@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cart.dart';
 import 'drawer.dart';
 import 'path.dart';
+import 'searchPage.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -35,6 +36,12 @@ class _LoginPageState extends State<LoginPage> {
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchPage()));
+                  },
+                  icon: Icon(Icons.search)),
               IconButton(
                   onPressed: () {
                     Navigator.push(context,

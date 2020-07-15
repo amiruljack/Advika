@@ -8,36 +8,27 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/database_helper.dart';
-import 'package/carousel_slider.dart';
 import 'path.dart';
 import 'allproduct_model.dart';
 import 'package:http/http.dart' as http;
 
-import 'searchPage.dart';
+class SearchPage extends StatefulWidget {
+  SearchPage({Key key, this.title}) : super(key: key);
 
-class CategoryProductPage extends StatefulWidget {
-  CategoryProductPage(this.categoryid, {Key key, this.title}) : super(key: key);
-  final String categoryid;
   final String title;
 
   @override
-  _CategoryProductPageState createState() => _CategoryProductPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _CategoryProductPageState extends State<CategoryProductPage> {
-  String categoryid;
-  final List<String> imgList = [
-    'http://w-safe.ml/advika/banner1.png',
-    'http://w-safe.ml/advika/banner2.jpg',
-    'http://w-safe.ml/advika/banner3.png',
-    'http://w-safe.ml/advika/banner4.jpg',
-  ];
+class _SearchPageState extends State<SearchPage> {
+  final textController = TextEditingController();
+
   var isLogin;
   int i = 0;
   @override
   void initState() {
     super.initState();
-    fetch();
     _isLogin();
     // DatabaseHelper.instance.deleteall();
   }
@@ -49,7 +40,6 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.categoryid);
     const PrimaryColor = const Color(0xFF34a24b);
     return MaterialApp(
       theme: ThemeData(
@@ -83,10 +73,26 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    getSearch(textController.text);
+                  });
+                },
+                controller: textController,
+                decoration: InputDecoration(
+                    labelText: 'Enter Product',
+                    labelStyle: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green))),
+              ),
               Container(
                 height: MediaQuery.of(context).size.height,
                 child: FutureBuilder(
-                    future: getProducts(),
+                    future: getSearch(textController.text),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       int ind = 0;
 
@@ -94,49 +100,6 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                         List<GetAllProduct> data = snapshot.data;
                         return CustomScrollView(
                           slivers: <Widget>[
-                            SliverGrid.count(
-                                crossAxisCount: 1,
-                                children: <Widget>[
-                                  FutureBuilder(
-                                      future: getBanner(),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          List<GetBanner> data = snapshot.data;
-                                          return CarouselSlider(
-                                            options: CarouselOptions(
-                                              height: 200,
-                                              carouselController: true,
-                                              autoPlay: true,
-                                              enableInfiniteScroll: true,
-                                            ),
-                                            items: data
-                                                .map((item) => Container(
-                                                      child: Center(
-                                                          child: Image.network(
-                                                              "$bannerimage/" +
-                                                                  item.image,
-                                                              fit: BoxFit.cover,
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height /
-                                                                  3.5)),
-                                                    ))
-                                                .toList(),
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }
-                                      }),
-                                ]),
                             SliverPadding(
                               padding: const EdgeInsets.only(bottom: 150),
                               sliver: SliverGrid.count(
@@ -279,10 +242,9 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
     );
   }
 
-  Future<List<GetAllProduct>> getProducts() async {
-    var response = await http.post("$api/getProductsByCategory", body: {
-      'id': widget.categoryid,
-    });
+  Future<List<GetAllProduct>> getSearch(String data) async {
+    var response =
+        await http.post("$api/getProductsBySearch", body: {'pattern': data});
     var dataUser = await json.decode(utf8.decode(response.bodyBytes));
     List<GetAllProduct> rp = [];
     //   const oneSec = const Duration(seconds:5);
@@ -311,15 +273,6 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
     } else {
       return 0;
     }
-  }
-
-  fetch() async {
-    const oneSec = const Duration(seconds: 500000);
-    new Timer.periodic(
-        oneSec,
-        (Timer t) => setState(() {
-              getProducts();
-            }));
   }
 
   Future _isLogin() async {

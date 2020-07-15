@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'cart.dart';
 import 'drawer.dart';
 import 'path.dart';
+import 'searchPage.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -40,6 +41,12 @@ class _ProfilePageState extends State<ProfilePage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.push(context,

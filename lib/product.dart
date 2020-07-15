@@ -10,6 +10,7 @@ import 'cart.dart';
 import 'database/database_helper.dart';
 import 'package:http/http.dart' as http;
 import 'path.dart';
+import 'searchPage.dart';
 
 class ProductPage extends StatefulWidget {
   ProductPage(this.productid, {Key key}) : super(key: key);
@@ -25,12 +26,7 @@ class _ProductPageState extends State<ProductPage> {
   var isLogin;
   int i = 0;
   final qtyController = TextEditingController();
-  final List<String> imgList = [
-    'http://w-safe.ml/advika/banner1.png',
-    'http://w-safe.ml/advika/banner2.jpg',
-    'http://w-safe.ml/advika/banner3.png',
-    'http://w-safe.ml/advika/banner4.jpg',
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +53,12 @@ class _ProductPageState extends State<ProductPage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.push(context,

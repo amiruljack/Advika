@@ -1,4 +1,5 @@
 import 'package:Advika/drawer.dart';
+import 'searchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +43,12 @@ class _CartPageState extends State<CartPage> {
             IconButton(
                 onPressed: () {
                   Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (context) => CartPage()));
                 },
                 icon: Icon(Icons.add_shopping_cart))
@@ -60,7 +67,6 @@ class _CartPageState extends State<CartPage> {
               Container(
                 height: 40.0,
                 child: Material(
-                  borderRadius: BorderRadius.circular(20.0),
                   shadowColor: Colors.yellowAccent,
                   color: Colors.yellow[800],
                   elevation: 7.0,
@@ -89,7 +95,7 @@ class _CartPageState extends State<CartPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 18.0),
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.70,
+                  height: MediaQuery.of(context).size.height * 0.65,
                   child: FutureBuilder(
                       future: DatabaseHelper.instance.getProduct(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -124,6 +130,9 @@ class _CartPageState extends State<CartPage> {
                                                   5),
                                           Column(
                                             children: <Widget>[
+                                              SizedBox(
+                                                height: 10,
+                                              ),
                                               Center(
                                                 child: Text(
                                                   "Product Name:" +
@@ -188,7 +197,7 @@ class _CartPageState extends State<CartPage> {
                                                                 },
                                                                 child: Center(
                                                                   child: Text(
-                                                                    'Select Qty.',
+                                                                    'Edit Qty.',
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .white,
@@ -250,7 +259,7 @@ class _CartPageState extends State<CartPage> {
                                                           BorderRadius.circular(
                                                               20.0),
                                                       shadowColor:
-                                                          Colors.greenAccent,
+                                                          Colors.redAccent,
                                                       color: Colors.red,
                                                       elevation: 7.0,
                                                       child: FlatButton(
@@ -267,24 +276,25 @@ class _CartPageState extends State<CartPage> {
                                                                 .getProduct();
                                                           });
                                                         },
-                                                        child: Center(
-                                                          child: Text(
-                                                            'Remove',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily:
-                                                                    'Montserrat'),
-                                                          ),
+                                                        child: Text(
+                                                          'Remove',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  'Montserrat'),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ],
                                               ),
+                                              SizedBox(
+                                                height: 10,
+                                              )
                                             ],
                                           )
                                         ],

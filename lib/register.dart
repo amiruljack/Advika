@@ -10,6 +10,7 @@ import 'drawer.dart';
 import 'login.dart';
 import 'main.dart';
 import 'path.dart';
+import 'searchPage.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -46,6 +47,12 @@ class _SignupPageState extends State<SignupPage> {
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchPage()));
+                  },
+                  icon: Icon(Icons.search)),
               IconButton(
                   onPressed: () {
                     Navigator.push(context,

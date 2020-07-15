@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'cart.dart';
 import 'database/database_helper.dart';
+import 'searchPage.dart';
 
 class SuccessPage extends StatefulWidget {
   SuccessPage({Key key}) : super(key: key);
@@ -31,6 +32,12 @@ class _SuccessPageState extends State<SuccessPage> {
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchPage()));
+                  },
+                  icon: Icon(Icons.search)),
               IconButton(
                   onPressed: () {
                     Navigator.push(context,

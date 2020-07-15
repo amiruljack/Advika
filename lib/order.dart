@@ -8,6 +8,8 @@ import 'drawer.dart';
 import 'path.dart';
 import 'package:http/http.dart' as http;
 
+import 'searchPage.dart';
+
 class OrderPage extends StatefulWidget {
   OrderPage({Key key}) : super(key: key);
 
@@ -35,6 +37,12 @@ class _OrderPageState extends State<OrderPage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.push(context,

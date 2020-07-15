@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:Advika/cart.dart';
 import 'package:Advika/drawer.dart';
 import 'package:Advika/product.dart';
+import 'package:Advika/searchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,6 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -137,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       }),
                                 ]),
                             SliverPadding(
-                              padding: const EdgeInsets.all(2),
+                              padding: const EdgeInsets.only(bottom: 150),
                               sliver: SliverGrid.count(
                                 crossAxisSpacing: 10,
                                 crossAxisCount: 2,

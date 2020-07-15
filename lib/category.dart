@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:Advika/category_model.dart';
 import 'package:flutter/material.dart';
 import 'cart.dart';
@@ -7,7 +5,7 @@ import 'category_product.dart';
 import 'drawer.dart';
 import 'fetchData.dart';
 import 'path.dart';
-import 'package:http/http.dart' as http;
+import 'searchPage.dart';
 
 class CategoryPage extends StatefulWidget {
   CategoryPage({Key key}) : super(key: key);
@@ -36,6 +34,12 @@ class _CategoryPageState extends State<CategoryPage> {
         appBar: AppBar(
           centerTitle: true,
           actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SearchPage()));
+                },
+                icon: Icon(Icons.search)),
             IconButton(
                 onPressed: () {
                   Navigator.push(context,

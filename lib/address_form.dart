@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'searchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -53,6 +54,12 @@ class _AddressPageState extends State<AddressPage> {
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SearchPage()));
+                  },
+                  icon: Icon(Icons.search)),
               IconButton(
                   onPressed: () {
                     Navigator.push(context,
