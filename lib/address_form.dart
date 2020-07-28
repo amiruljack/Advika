@@ -209,9 +209,6 @@ class _AddressPageState extends State<AddressPage> {
                                     elevation: 7.0,
                                     child: FlatButton(
                                       onPressed: () async {
-                                        setState(() {
-                                          tag = 1;
-                                        });
                                         _uploadAddress();
                                         // _signup();
                                       },
@@ -286,22 +283,36 @@ class _AddressPageState extends State<AddressPage> {
   void _uploadAddress() async {
     if (nameController.text.length == 0) {
       Fluttertoast.showToast(msg: "Enter valid Name");
+      setState(() {
+        tag = 0;
+      });
       return null;
     }
     if (emailController.text.length == 0) {
       Fluttertoast.showToast(msg: "Enter valid Email");
+      setState(() {
+        tag = 0;
+      });
       return null;
     }
 
     if (numberController.text.length == 0) {
       Fluttertoast.showToast(msg: "Enter valid Number");
+      setState(() {
+        tag = 0;
+      });
       return null;
     }
     if (addressController.text.length == 0) {
       Fluttertoast.showToast(msg: "Enter valid Address");
+      setState(() {
+        tag = 0;
+      });
       return null;
     }
-
+    setState(() {
+      tag = 1;
+    });
     var response = await http.post("$api/addAddress", body: {
       "name": nameController.text,
       "email": emailController.text,
@@ -310,6 +321,9 @@ class _AddressPageState extends State<AddressPage> {
     });
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
+      setState(() {
+        tag = 0;
+      });
       Fluttertoast.showToast(
           msg: 'unautorized access:' + "Enter valid credential");
 

@@ -421,7 +421,7 @@ class _CartPageState extends State<CartPage> {
                   TextField(
                     autocorrect: true,
                     controller: qtyCtrl,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         labelText: 'Enter Qty in $unit Minimum($minimum $unit)',
                         labelStyle: TextStyle(

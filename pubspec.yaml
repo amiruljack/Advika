@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   http: any
   shared_preferences: any
   bottom_navy_bar: ^5.4.0

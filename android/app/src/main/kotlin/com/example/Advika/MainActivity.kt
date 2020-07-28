@@ -1,4 +1,4 @@
-package com.example.Advika
+package com.digiblade.Advika
 
 import io.flutter.embedding.android.FlutterActivity
 

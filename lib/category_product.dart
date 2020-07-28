@@ -94,51 +94,61 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                         List<GetAllProduct> data = snapshot.data;
                         return CustomScrollView(
                           slivers: <Widget>[
-                            SliverGrid.count(
-                                crossAxisCount: 1,
-                                children: <Widget>[
-                                  FutureBuilder(
-                                      future: getBanner(),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          List<GetBanner> data = snapshot.data;
-                                          return CarouselSlider(
-                                            options: CarouselOptions(
-                                              height: 200,
-                                              carouselController: true,
-                                              autoPlay: true,
-                                              enableInfiniteScroll: true,
-                                            ),
-                                            items: data
-                                                .map((item) => Container(
-                                                      child: Center(
-                                                          child: Image.network(
-                                                              "$bannerimage/" +
-                                                                  item.image,
-                                                              fit: BoxFit.cover,
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height /
-                                                                  3.5)),
-                                                    ))
-                                                .toList(),
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }
-                                      }),
-                                ]),
+                            SliverList(
+                              // Use a delegate to build items as they're scrolled on screen.
+                              delegate: SliverChildBuilderDelegate(
+                                // The builder function returns a ListTile with a title that
+                                // displays the index of the current item.
+                                (context, index) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    FutureBuilder(
+                                        future: getBanner(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.hasData) {
+                                            List<GetBanner> data =
+                                                snapshot.data;
+                                            return CarouselSlider(
+                                              options: CarouselOptions(
+                                                viewportFraction: 1.5,
+                                                autoPlay: true,
+                                              ),
+                                              items: data
+                                                  .map((item) => Container(
+                                                        child: Center(
+                                                            child: Image.network(
+                                                                "$bannerimage/" +
+                                                                    item.image,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height /
+                                                                    3.5)),
+                                                      ))
+                                                  .toList(),
+                                            );
+                                          } else {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                        }),
+                                  ],
+                                ),
+                                // Builds 1000 ListTiles
+                                childCount: 1,
+                              ),
+                            ),
                             SliverPadding(
-                              padding: const EdgeInsets.only(bottom: 150),
+                              padding: const EdgeInsets.only(bottom: 10),
                               sliver: SliverGrid.count(
                                 crossAxisSpacing: 10,
                                 crossAxisCount: 2,
@@ -261,6 +271,30 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
                                       ),
                                     )
                                     .toList(),
+                              ),
+                            ),
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 6.0,
+                                            left: 8.0,
+                                            right: 8.0,
+                                            bottom: 100),
+                                        child: Image.network(
+                                          "$bannerimage/banner.jpg",
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                // Builds 1000 ListTiles
+                                childCount: 1,
                               ),
                             ),
                           ],
